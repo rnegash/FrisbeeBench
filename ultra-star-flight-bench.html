@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Ultra-Star Flight Bench</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --paper:#EDEFE8; --panel:#E3E7DE; --sunk:#DADFD3;
+  --ink:#1B2420; --body:#2E3A34; --muted:#5F6B63; --faint:#8D978F;
+  --rule:#C9D0C3; --hair:#D8DDD1;
+  --accent:#C64A18; --accent-soft:rgba(198,74,24,.13);
+  --teal:#1B6D68; --teal-soft:rgba(27,109,104,.13);
+  --ochre:#9A7A22;
+  --grid:rgba(27,36,32,.09); --grid-strong:rgba(27,36,32,.17);
+  --warn:#8A5A05; --good:#2C6B3F;
+  --shadow:0 1px 0 rgba(27,36,32,.07);
+  --f-display:'Chivo',system-ui,-apple-system,sans-serif;
+  --f-body:'IBM Plex Serif',Georgia,serif;
+  --f-data:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121614; --panel:#1A211D; --sunk:#0D110F;
+    --ink:#E6EAE2; --body:#CBD3C9; --muted:#8E998F; --faint:#69736B;
+    --rule:#2B332E; --hair:#232A26;
+    --accent:#F3733E; --accent-soft:rgba(243,115,62,.16);
+    --teal:#46B0A7; --teal-soft:rgba(70,176,167,.16);
+    --ochre:#D4B159;
+    --grid:rgba(230,234,226,.09); --grid-strong:rgba(230,234,226,.18);
+    --warn:#D9A63C; --good:#65C185;
+    --shadow:0 1px 0 rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121614; --panel:#1A211D; --sunk:#0D110F;
+  --ink:#E6EAE2; --body:#CBD3C9; --muted:#8E998F; --faint:#69736B;
+  --rule:#2B332E; --hair:#232A26;
+  --accent:#F3733E; --accent-soft:rgba(243,115,62,.16);
+  --teal:#46B0A7; --teal-soft:rgba(70,176,167,.16);
+  --ochre:#D4B159;
+  --grid:rgba(230,234,226,.09); --grid-strong:rgba(230,234,226,.18);
+  --warn:#D9A63C; --good:#65C185;
+  --shadow:0 1px 0 rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--body);
+  font-family:var(--f-body); font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 96px}
+.col{max-width:68ch}
+h1,h2,h3,h4{font-family:var(--f-display);color:var(--ink);text-wrap:balance;margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--ink);padding:34px 0 18px;margin-bottom:0}
+.eyebrow{font-family:var(--f-data);font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:var(--muted)}
+.mast h1{font-size:clamp(32px,5.6vw,58px);font-weight:800;letter-spacing:-.028em;line-height:1;margin:12px 0 0}
+.mast .sub{font-size:17px;color:var(--muted);margin:14px 0 0;max-width:62ch;font-style:italic}
+.spec{display:flex;flex-wrap:wrap;gap:0 26px;margin-top:20px;font-family:var(--f-data);font-size:12px;color:var(--muted)}
+.spec b{color:var(--ink);font-weight:600}
+
+/* ---------- nav ---------- */
+nav.toc{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
+  display:flex;gap:2px;overflow-x:auto;padding:8px 0;margin-bottom:44px}
+nav.toc a{font-family:var(--f-data);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;white-space:nowrap;padding:5px 11px;border-radius:2px}
+nav.toc a:hover{color:var(--ink);background:var(--panel)}
+
+/* ---------- sections ---------- */
+section{margin:0 0 76px;scroll-margin-top:60px}
+.sechead{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--ink);padding-bottom:8px;margin-bottom:26px}
+.sechead h2{font-size:clamp(21px,2.6vw,28px);font-weight:700;letter-spacing:-.018em;flex:1}
+.sechead .tag{font-family:var(--f-data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+p{margin:0 0 15px}
+.lede{font-size:18.5px;line-height:1.58}
+strong{color:var(--ink);font-weight:600}
+em.term{font-style:normal;font-family:var(--f-data);font-size:.9em;color:var(--ink);background:var(--panel);padding:1px 5px;border-radius:2px}
+
+/* ---------- the bench ---------- */
+.bench{display:grid;grid-template-columns:290px 1fr;gap:0;border:1px solid var(--ink);background:var(--panel)}
+@media(max-width:900px){.bench{grid-template-columns:1fr}}
+.rail{border-right:1px solid var(--rule);padding:0;background:var(--panel)}
+@media(max-width:900px){.rail{border-right:0;border-bottom:1px solid var(--rule)}}
+.railgroup{border-bottom:1px solid var(--rule);padding:14px 16px 16px}
+.railgroup:last-child{border-bottom:0}
+.railgroup > .gh{font-family:var(--f-data);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
+.ctl{margin-bottom:13px}
+.ctl:last-child{margin-bottom:0}
+.ctl .lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-data);font-size:11.5px;color:var(--muted);margin-bottom:3px}
+.ctl .lab b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.ctl .hint{font-family:var(--f-data);font-size:10px;color:var(--faint);margin-top:2px;min-height:12px}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:16px;margin:0;cursor:grab}
+input[type=range]:active{cursor:grabbing}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule)}
+input[type=range]::-moz-range-track{height:2px;background:var(--rule)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--accent);border:none}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:var(--accent)}
+.seg{display:flex;flex-wrap:wrap;gap:3px}
+.seg button{flex:1 1 auto;font-family:var(--f-data);font-size:10.5px;letter-spacing:.03em;padding:6px 4px;
+  background:var(--sunk);border:1px solid var(--rule);color:var(--muted);cursor:pointer;border-radius:2px;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
+.btnrow{display:flex;gap:5px;margin-top:2px}
+.btn{font-family:var(--f-data);font-size:11px;padding:7px 10px;background:var(--sunk);border:1px solid var(--rule);
+  color:var(--ink);cursor:pointer;border-radius:2px;flex:1}
+.btn:hover{border-color:var(--ink)}
+.btn.ghost{color:var(--muted)}
+
+.stage{padding:0;min-width:0}
+.plotwrap{position:relative;border-bottom:1px solid var(--rule)}
+.plotwrap:last-of-type{border-bottom:0}
+.plotwrap .cap{position:absolute;top:9px;left:12px;font-family:var(--f-data);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);pointer-events:none}
+canvas{display:block;width:100%}
+
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));border-top:1px solid var(--ink);background:var(--panel)}
+.rd{padding:10px 12px 11px;border-right:1px solid var(--rule)}
+.rd:last-child{border-right:0}
+.rd .k{font-family:var(--f-data);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+.rd .v{font-family:var(--f-data);font-size:19px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.35}
+.rd .v small{font-size:11px;color:var(--muted);font-weight:400}
+.verdict{border-top:1px solid var(--rule);padding:11px 14px;font-family:var(--f-data);font-size:12.5px;
+  color:var(--body);background:var(--sunk);line-height:1.5}
+.verdict b{color:var(--ink)}
+.verdict .flag{color:var(--warn)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:9px 14px;border-top:1px solid var(--rule);
+  font-family:var(--f-data);font-size:11px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:15px;height:2px;vertical-align:middle;margin-right:6px}
+.presets{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 14px}
+.presets button{font-family:var(--f-data);font-size:11px;padding:6px 11px;background:var(--panel);
+  border:1px solid var(--rule);color:var(--muted);cursor:pointer;border-radius:2px}
+.presets button:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ---------- charts block ---------- */
+.chartgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0;border:1px solid var(--ink);background:var(--panel)}
+.chartcell{border-right:1px solid var(--rule);position:relative;min-width:0}
+.chartcell:last-child{border-right:0}
+@media(max-width:800px){.chartcell{border-right:0;border-bottom:1px solid var(--rule)}.chartcell:last-child{border-bottom:0}}
+.chartcell .cap{position:absolute;top:9px;left:12px;font-family:var(--f-data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+/* ---------- precession panel ---------- */
+.prec{border:1px solid var(--ink);background:var(--panel);display:grid;grid-template-columns:1fr 260px}
+@media(max-width:760px){.prec{grid-template-columns:1fr}}
+.prec .num{padding:16px 18px;border-left:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center;gap:12px}
+@media(max-width:760px){.prec .num{border-left:0;border-top:1px solid var(--rule)}}
+.eq{font-family:var(--f-data);font-size:15px;color:var(--ink);letter-spacing:.02em}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--hair);vertical-align:top}
+thead th{font-family:var(--f-data);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
+  border-bottom:1px solid var(--rule);font-weight:500;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.n,th.n{font-family:var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+td b{color:var(--ink)}
+caption{caption-side:bottom;text-align:left;padding:9px 13px;font-family:var(--f-data);font-size:11px;color:var(--faint);border-top:1px solid var(--hair)}
+
+/* ---------- fault list ---------- */
+.faults{display:grid;gap:0;border:1px solid var(--rule)}
+.fault{display:grid;grid-template-columns:200px 1fr;gap:0;border-bottom:1px solid var(--hair);background:var(--panel)}
+.fault:last-child{border-bottom:0}
+@media(max-width:700px){.fault{grid-template-columns:1fr}}
+.fault .nm{padding:13px 15px;border-right:1px solid var(--hair);background:var(--sunk)}
+@media(max-width:700px){.fault .nm{border-right:0;border-bottom:1px solid var(--hair)}}
+.fault .nm h4{font-size:15px;font-weight:600;line-height:1.3}
+.fault .nm .sig{font-family:var(--f-data);font-size:10px;color:var(--warn);letter-spacing:.08em;text-transform:uppercase;margin-top:5px}
+.fault .bd{padding:13px 15px;font-size:14.5px}
+.fault .bd dl{margin:0;display:grid;grid-template-columns:60px 1fr;gap:3px 12px}
+.fault .bd dt{font-family:var(--f-data);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);padding-top:4px}
+.fault .bd dd{margin:0}
+
+/* ---------- phase strip ---------- */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ink);background:var(--panel)}
+@media(max-width:760px){.phases{grid-template-columns:1fr}}
+.ph{padding:16px 17px;border-right:1px solid var(--rule)}
+.ph:last-child{border-right:0}
+@media(max-width:760px){.ph{border-right:0;border-bottom:1px solid var(--rule)}.ph:last-child{border-bottom:0}}
+.ph .no{font-family:var(--f-data);font-size:11px;color:var(--accent);letter-spacing:.14em}
+.ph h4{font-size:17px;margin:5px 0 7px;font-weight:700}
+.ph p{font-size:14px;margin:0 0 8px}
+.ph .cond{font-family:var(--f-data);font-size:11px;color:var(--muted);border-top:1px solid var(--hair);padding-top:7px;margin-top:9px}
+
+/* ---------- wind matrix ---------- */
+.winds{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));border:1px solid var(--ink);background:var(--panel)}
+.wc{padding:15px 16px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.wc h4{font-size:15.5px;font-weight:700;margin-bottom:4px}
+.wc .mech{font-family:var(--f-data);font-size:11px;color:var(--accent);margin-bottom:8px}
+.wc p{font-size:14px;margin:0}
+.wc .fix{font-size:13.5px;margin-top:9px;padding-top:8px;border-top:1px solid var(--hair);color:var(--ink)}
+.wc .fix span{font-family:var(--f-data);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:2px}
+
+/* ---------- stages ---------- */
+ol.stages{list-style:none;counter-reset:st;padding:0;margin:0;display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+ol.stages li{counter-increment:st;background:var(--panel);padding:15px 17px 15px 56px;position:relative}
+ol.stages li::before{content:counter(st);position:absolute;left:17px;top:15px;font-family:var(--f-data);
+  font-size:12px;color:var(--paper);background:var(--ink);width:22px;height:22px;display:grid;place-items:center;border-radius:50%}
+ol.stages h4{font-size:15.5px;font-weight:600;margin-bottom:4px}
+ol.stages p{font-size:14.5px;margin:0}
+ol.stages .bench-mark{font-family:var(--f-data);font-size:11.5px;color:var(--muted);margin-top:7px;padding-top:6px;border-top:1px solid var(--hair)}
+ol.stages .bench-mark b{color:var(--good)}
+
+/* ---------- glossary ---------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 26px}
+.gloss dl{margin:0}
+.gloss dt{font-family:var(--f-data);font-size:12.5px;color:var(--ink);font-weight:600;margin-top:13px}
+.gloss dd{margin:1px 0 0;font-size:14px;color:var(--body)}
+
+/* ---------- notes ---------- */
+.notes{border-left:2px solid var(--accent);padding:2px 0 2px 18px;font-size:14.5px}
+.notes h4{font-size:14px;font-family:var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:18px 0 5px}
+.notes h4:first-child{margin-top:0}
+.notes p{margin:0 0 10px}
+.refs{font-size:13.5px;color:var(--muted)}
+.refs li{margin-bottom:7px}
+footer{border-top:1px solid var(--ink);padding-top:14px;font-family:var(--f-data);font-size:11px;color:var(--faint);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+/* ---------- diagrams ---------- */
+figure.dia{margin:24px 0;max-width:880px;border:1px solid var(--rule);background:var(--panel);padding:14px 16px 11px}
+figure.dia.narrow{max-width:700px}
+figure.dia svg{display:block;width:100%;height:auto;color:var(--ink);overflow:visible}
+figure.dia figcaption{font-family:var(--f-data);font-size:11.5px;line-height:1.55;color:var(--muted);
+  margin-top:11px;padding-top:9px;border-top:1px solid var(--hair)}
+figure.dia figcaption b{color:var(--ink);font-weight:500}
+.dia .st{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.dia .thin{fill:none;stroke:currentColor;stroke-width:1;opacity:.35}
+.dia .dash{fill:none;stroke:currentColor;stroke-width:1;opacity:.42;stroke-dasharray:4 4}
+.dia .hot{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round}
+.dia .hotthin{fill:none;stroke:var(--accent);stroke-width:1.2;opacity:.85}
+.dia .fill{fill:currentColor;opacity:.10;stroke:none}
+.dia .disc{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.dia .dot{fill:currentColor;stroke:none}
+.dia .adot{fill:var(--accent);stroke:none}
+.dia text{font-family:var(--f-data);font-size:11px;fill:currentColor;stroke:none}
+.dia text.m{fill:var(--muted);font-size:10px}
+.dia text.a{fill:var(--accent)}
+.dia text.t{fill:var(--faint);font-size:10px;letter-spacing:.12em}
+.mkA{fill:var(--accent)}
+.figrow{display:grid;grid-template-columns:1fr;gap:0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;color:var(--ink)"><defs>
+<marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0,1.2 L10,5 L0,8.8 z" fill="currentColor"/></marker>
+<marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0,1.2 L10,5 L0,8.8 z" class="mkA"/></marker>
+</defs></svg>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">Coaching reference &amp; flight model &middot; 175 g Discraft Ultra-Star</div>
+  <h1>Ultra-Star Flight Bench</h1>
+  <p class="sub">Why the disc curves, what actually kills your distance, and a working simulator built on the published wind-tunnel numbers.</p>
+  <div class="spec">
+    <span><b>175 g</b> mass</span><span><b>27.3 cm</b> diameter</span><span><b>0.057 m²</b> planform</span>
+    <span><b>I<sub>zz</sub> 0.00235</b> kg·m²</span><span><b>Re ≈ 2.6×10⁵</b> at 14 m/s</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#bench">Flight bench</a>
+  <a href="#precession">The one idea</a>
+  <a href="#angles">Three angles</a>
+  <a href="#phases">Turn &amp; fade</a>
+  <a href="#coeffs">Coefficients</a>
+  <a href="#wind">Wind</a>
+  <a href="#faults">Faults</a>
+  <a href="#conditions">Conditions</a>
+  <a href="#stages">Teaching order</a>
+  <a href="#numbers">Numbers</a>
+  <a href="#glossary">Glossary</a>
+  <a href="#notes">Model notes</a>
+</nav>
+
+<!-- ============ BENCH ============ -->
+<section id="bench">
+  <div class="sechead"><h2>Flight bench</h2><span class="tag">Interactive</span></div>
+  <p class="col" style="margin-bottom:18px">Integrates the standard disc model — linear lift, quadratic drag, and a pitching moment that precesses the disc 90° round in the spin direction. Change one thing at a time and watch the shape, not just the number. Both views share the same downrange scale; the plan view is drawn over a regulation field, 37 m wide with the goal line at 18 m.</p>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="bench">
+    <div class="rail">
+      <div class="railgroup">
+        <div class="gh">Throw</div>
+        <div class="ctl"><div class="seg" id="handSeg"></div><div class="hint" id="handHint"></div></div>
+      </div>
+
+      <div class="railgroup">
+        <div class="gh">Release</div>
+        <div class="ctl"><div class="lab"><span>Speed</span><b><span id="vSpeed"></span> m/s</b></div>
+          <input type="range" id="speed" min="5" max="32" step="0.5"><div class="hint" id="hSpeed"></div></div>
+        <div class="ctl"><div class="lab"><span>Spin</span><b><span id="vSpin"></span> rad/s</b></div>
+          <input type="range" id="spin" min="12" max="130" step="1"><div class="hint" id="hSpin"></div></div>
+        <div class="ctl"><div class="lab"><span>Nose angle (AoA)</span><b><span id="vAoa"></span>°</b></div>
+          <input type="range" id="aoa" min="-8" max="32" step="0.5"><div class="hint" id="hAoa"></div></div>
+        <div class="ctl"><div class="lab"><span>Launch angle</span><b><span id="vLaunch"></span>°</b></div>
+          <input type="range" id="launch" min="-10" max="50" step="1"><div class="hint" id="hLaunch"></div></div>
+        <div class="ctl"><div class="lab"><span>Bank</span><b><span id="vBank"></span>°</b></div>
+          <input type="range" id="bank" min="-45" max="45" step="1"><div class="hint" id="hBank"></div></div>
+        <div class="ctl" style="margin-top:2px"><canvas id="cAtt" style="border:1px solid var(--rule)"></canvas></div>
+        <div class="ctl"><div class="lab"><span>Release height</span><b><span id="vHeight"></span> m</b></div>
+          <input type="range" id="height" min="0.2" max="2.4" step="0.05"><div class="hint">Low throws sit in slower, steadier air</div></div>
+        <div class="ctl"><div class="lab"><span>Wobble (off-axis torque)</span><b><span id="vWob"></span>%</b></div>
+          <input type="range" id="wobble" min="0" max="100" step="5"><div class="hint" id="hWob"></div></div>
+      </div>
+
+      <div class="railgroup">
+        <div class="gh">Disc</div>
+        <div class="ctl"><div class="lab"><span>Trim angle (stability)</span><b><span id="vTrim"></span>°</b></div>
+          <input type="range" id="trim" min="1" max="12" step="0.2"><div class="hint" id="hTrim"></div></div>
+        <div class="ctl"><div class="lab"><span>Coefficient set</span></div>
+          <div class="seg" id="setSeg"></div><div class="hint" id="hSet"></div></div>
+      </div>
+
+      <div class="railgroup">
+        <div class="gh">Conditions</div>
+        <div class="ctl"><div class="lab"><span>Wind speed</span><b><span id="vWind"></span> m/s</b></div>
+          <input type="range" id="wind" min="0" max="14" step="0.5"><div class="hint" id="hWind"></div></div>
+        <div class="ctl"><div class="lab"><span>Wind from</span><b><span id="vWdir"></span></b></div>
+          <input type="range" id="wdir" min="0" max="350" step="10"><div class="hint">0° ahead · 90° your right · 180° behind</div></div>
+        <div class="ctl"><div class="lab"><span>Elevation</span><b><span id="vAlt"></span> m</b></div>
+          <input type="range" id="alt" min="0" max="2600" step="25"><div class="hint" id="hAlt"></div></div>
+        <div class="ctl"><div class="lab"><span>Air temperature</span><b><span id="vTemp"></span> °C</b></div>
+          <input type="range" id="temp" min="-8" max="42" step="1"><div class="hint" id="hTemp"></div></div>
+      </div>
+
+      <div class="railgroup">
+        <div class="btnrow">
+          <button class="btn" id="pinBtn">Pin as reference</button>
+          <button class="btn ghost" id="clearBtn">Clear</button>
+        </div>
+        <div class="btnrow" style="margin-top:5px">
+          <button class="btn" id="playBtn">▶ Fly it</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="plotwrap"><span class="cap">Side elevation — height above ground</span><canvas id="cSide"></canvas></div>
+      <div class="plotwrap"><span class="cap">Plan view — over the field, looking down</span><canvas id="cTop"></canvas></div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>This throw</span>
+        <span id="legRef" hidden><i style="background:var(--teal)"></i>Pinned reference</span>
+        <span><i style="background:var(--grid-strong)"></i>2.1 m — top of a normal catch</span>
+        <span id="legHint" style="color:var(--faint)">Drag any slider; both views redraw live</span>
+      </div>
+      <div class="readout" id="readout"></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRECESSION ============ -->
+<section id="precession">
+  <div class="sechead"><h2>The one idea worth teaching first</h2><span class="tag">Gyroscopic precession</span></div>
+  <div class="col">
+    <p class="lede">A disc does not curve because you aimed it sideways. It curves because the air pushes on it off-centre, and a spinning object responds to a push <strong>90° later in the direction of spin</strong>. The pitching moment tries to tip the nose; the disc answers by rolling.</p>
+    <p>That single fact explains turn, fade, S-curves, why backhand and forehand mirror each other, and why the fix for a disc that keeps flipping over is usually more spin rather than different aim. Everything else on this page is detail hung off it.</p>
+  </div>
+
+  <figure class="dia">
+  <svg viewBox="0 0 700 262" role="img" aria-label="Three step chain: lift acts behind the centre giving a nose-down moment; on a spinning disc the point ninety degrees ahead in the spin direction rises instead; so the disc banks and the flight curves.">
+    <text class="m" x="238" y="122" text-anchor="middle" font-size="17">&#8594;</text>
+    <text class="m" x="464" y="122" text-anchor="middle" font-size="17">&#8594;</text>
+
+    <text class="t" x="16" y="30">1 &#183; THE PUSH</text>
+    <text class="m" x="16" y="46">side view, flying right</text>
+    <g transform="translate(110,124)">
+      <path d="M-30,0 Q-27,-3.2 -22,-5.2 Q0,-13.5 22,-5.2 Q27,-3.2 30,0 Z" class="fill"/>
+      <path d="M-30,0 Q-27,-3.2 -22,-5.2 Q0,-13.5 22,-5.2 Q27,-3.2 30,0" class="disc"/>
+      <line x1="-30" y1="0" x2="30" y2="0" class="disc"/>
+    </g>
+    <circle cx="110" cy="124" r="3.4" class="dot"/>
+    <text class="m" x="110" y="146" text-anchor="middle">CG</text>
+    <circle cx="84" cy="124" r="3.6" class="adot"/>
+    <line x1="84" y1="124" x2="84" y2="76" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="84" y="66" text-anchor="middle">lift</text>
+    <path d="M143.9,102.8 A40,40 0 0,1 143.9,145.2" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="156" y="124">M</text>
+    <text class="m" x="16" y="212">the lift force sits behind</text>
+    <text class="m" x="16" y="228">the centre of gravity</text>
+    <text class="m" x="16" y="244">&#8594; it tries to pitch the nose down</text>
+
+    <text class="t" x="248" y="30">2 &#183; THE ANSWER</text>
+    <text class="m" x="248" y="46">from above, flying up the page</text>
+    <circle cx="350" cy="122" r="44" class="fill"/>
+    <circle cx="350" cy="122" r="44" class="st"/>
+    <path d="M293.6,101.5 A60,60 0 0,1 406.4,101.5" class="thin" marker-end="url(#ah)"/>
+    <text class="m" x="350" y="72" text-anchor="middle">spin, clockwise</text>
+    <circle cx="350" cy="166" r="6.5" class="hot"/><circle cx="350" cy="166" r="2" class="adot"/>
+    <path d="M350,180 A58,58 0 0,1 292,122" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="350" y="196" text-anchor="middle">push up here</text>
+    <circle cx="306" cy="122" r="6.5" class="hot"/><circle cx="306" cy="122" r="2" class="adot"/>
+    <text class="a" x="294" y="122" text-anchor="end">rises</text>
+    <circle cx="394" cy="122" r="4" class="adot"/>
+    <text class="a" x="404" y="122">drops</text>
+    <text class="m" x="248" y="212">the point 90&#176; ahead in the</text>
+    <text class="m" x="248" y="228">spin direction rises instead</text>
+    <text class="m" x="248" y="244">&#8594; the far edge drops</text>
+
+    <text class="t" x="474" y="30">3 &#183; THE CURVE</text>
+    <text class="m" x="474" y="46">from behind</text>
+    <line x1="516" y1="118" x2="646" y2="118" class="dash"/>
+    <line x1="530.5" y1="96.9" x2="625.5" y2="139.1" class="disc" stroke-width="2.6"/>
+    <line x1="578" y1="118" x2="599.2" y2="70.5" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="604" y="64">lift</text>
+    <path d="M508,182 Q566,182 616,158" class="hot" marker-end="url(#aha)"/>
+    <text class="m" x="474" y="212">the lift vector leans right,</text>
+    <text class="m" x="474" y="228">so the whole flight path</text>
+    <text class="m" x="474" y="244">curves right</text>
+  </svg>
+  <figcaption><b>The whole of turn and fade, in three steps.</b> Drawn for a right-handed backhand, which spins clockwise seen from above. Reverse the spin &#8212; a right-handed forehand &#8212; and every consequence mirrors. Note what step&nbsp;2 does <em>not</em> say: nothing pushes the disc sideways.</figcaption>
+  </figure>
+
+  <div class="prec" style="margin:22px 0 14px">
+    <div style="position:relative;min-width:0"><span class="cap" style="position:absolute;top:9px;right:14px;font-family:var(--f-data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)">Same moment, more spin</span><canvas id="cPrec"></canvas></div>
+    <div class="num">
+      <div class="eq">p = M / (I<sub>zz</sub> · Ω)</div>
+      <div class="ctl"><div class="lab"><span>Spin Ω</span><b><span id="vPspin"></span> rad/s</b></div>
+        <input type="range" id="pspin" min="15" max="130" step="1" value="50"></div>
+      <div>
+        <div class="k" style="font-family:var(--f-data);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)">Roll rate at 14 m/s, 5° AoA</div>
+        <div style="font-family:var(--f-data);font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums" id="vProll"></div>
+      </div>
+      <div style="font-family:var(--f-data);font-size:11px;color:var(--muted);line-height:1.5" id="vPnote"></div>
+    </div>
+  </div>
+  <p class="col" style="font-size:14.5px;color:var(--muted)"><strong>The coaching rule that falls out of it:</strong> double the spin, halve the rate of turn and fade. Spin does not make the disc fly — lift and drag are essentially independent of spin in both the wind-tunnel and flight-fit data. Spin buys you resistance to being twisted.</p>
+
+  <div class="col" style="margin-top:20px">
+    <h3 style="font-size:18px;margin-bottom:8px">Why backhand and forehand mirror</h3>
+    <p>A right-handed backhand spins clockwise seen from above; a right-handed forehand spins counter-clockwise. Same air, same nose angle, same moment — but the 90° offset lands on the opposite side. So a flat RH backhand drifts right under turnover and a flat RH forehand drifts left, and the bank you need to shape an inside-out throw is opposite between the two.</p>
+  </div>
+
+  <figure class="dia narrow">
+  <svg viewBox="0 0 620 210" role="img" aria-label="Two top views: a right-handed backhand spins clockwise and its flight path bends right; a right-handed forehand spins counter-clockwise and bends left.">
+    <line x1="310" y1="20" x2="310" y2="176" class="thin"/>
+    <path d="M170,182 C170,140 176,112 206,50" class="hot" marker-end="url(#aha)"/>
+    <circle cx="170" cy="108" r="46" class="fill"/>
+    <circle cx="170" cy="108" r="46" class="st"/>
+    <path d="M133.4,80.5 A46,46 0 0,1 206.6,80.5" class="st" opacity="0.75" marker-end="url(#ah)"/>
+    <text class="m" x="118" y="112" text-anchor="end">spin &#8635;</text>
+    <text x="170" y="198" text-anchor="middle">RH backhand &#183; turns right</text>
+
+    <path d="M450,182 C450,140 444,112 414,50" class="hot" marker-end="url(#aha)"/>
+    <circle cx="450" cy="108" r="46" class="fill"/>
+    <circle cx="450" cy="108" r="46" class="st"/>
+    <path d="M486.6,80.5 A46,46 0 0,0 413.4,80.5" class="st" opacity="0.75" marker-end="url(#ah)"/>
+    <text class="m" x="502" y="112">&#8634; spin</text>
+    <text x="450" y="198" text-anchor="middle">RH forehand &#183; turns left</text>
+  </svg>
+  <figcaption><b>Same physics, mirrored.</b> Seen from above with the throw travelling up the page. Everything else about the two throws can be identical &#8212; nose angle, speed, bank &#8212; and they will still curve opposite ways, because the 90&#176; offset follows the spin.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ ANGLES ============ -->
+<section id="angles">
+  <div class="sechead"><h2>Three angles students confuse</h2><span class="tag">Definitions</span></div>
+  <p class="col" style="margin-bottom:20px">Almost every muddled coaching conversation about "angle" is two people using the word for different things. Separate them explicitly and early.</p>
+  <div class="phases">
+    <div class="ph">
+      <div class="no">VELOCITY</div>
+      <h4>Launch angle</h4>
+      <p>The angle of the disc's <em>velocity vector</em> to the horizon — where you're throwing it. This is the one beginners think they're controlling.</p>
+      <div class="cond">Best range near 10°. Best hang time near 20°. Never 45°.</div>
+    </div>
+    <div class="ph">
+      <div class="no">AIR</div>
+      <h4>Angle of attack — "nose angle"</h4>
+      <p>The angle between the <em>disc plane</em> and the oncoming air. This is what actually drives lift, drag and pitching moment — and it changes throughout the flight as the disc slows and starts to fall.</p>
+      <div class="cond">Zero lift at −4°. Trimmed at ≈9°. Stall not until ≈45°.</div>
+    </div>
+    <div class="ph">
+      <div class="no">TILT</div>
+      <h4>Bank angle</h4>
+      <p>Tilt about the direction of travel. Disc golf calls it hyzer / anhyzer; ultimate calls it inside-out and outside-in. Bank steers directly by tilting the lift vector, on top of whatever precession is doing.</p>
+      <div class="cond">IO = hyzer = the disc's natural fade side. OO = anhyzer = the turnover side.</div>
+    </div>
+  </div>
+  <figure class="dia">
+  <svg viewBox="0 0 700 210" role="img" aria-label="Three panels showing that launch angle is measured against the horizon, angle of attack against the oncoming air, and bank angle about the flight path.">
+    <line x1="240" y1="18" x2="240" y2="182" class="thin"/><line x1="462" y1="18" x2="462" y2="182" class="thin"/>
+
+    <text class="t" x="18" y="32">LAUNCH ANGLE</text>
+    <line x1="24" y1="150" x2="222" y2="150" class="dash"/>
+    <text class="m" x="24" y="166">horizon</text>
+    <g transform="translate(54,150)">
+      <path d="M-24,0 Q-22,-2.6 -18,-4.2 Q0,-11 18,-4.2 Q22,-2.6 24,0 Z" class="fill"/>
+      <path d="M-24,0 Q-22,-2.6 -18,-4.2 Q0,-11 18,-4.2 Q22,-2.6 24,0" class="disc"/>
+      <line x1="-24" y1="0" x2="24" y2="0" class="disc"/>
+    </g>
+    <line x1="54" y1="150" x2="214" y2="102" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="216" y="94" text-anchor="end">flight path</text>
+    <path d="M114,150 A60,60 0 0,0 111.5,132.8" class="hot"/>
+    <text class="a" x="122" y="141">&#947;</text>
+    <text class="m" x="18" y="198">against the horizon</text>
+
+    <text class="t" x="252" y="32">ANGLE OF ATTACK</text>
+    <g transform="translate(306,140) rotate(-15)">
+      <path d="M-24,0 Q-22,-2.6 -18,-4.2 Q0,-11 18,-4.2 Q22,-2.6 24,0 Z" class="fill"/>
+      <path d="M-24,0 Q-22,-2.6 -18,-4.2 Q0,-11 18,-4.2 Q22,-2.6 24,0" class="disc"/>
+      <line x1="-24" y1="0" x2="24" y2="0" class="disc"/>
+    </g>
+    <line x1="306" y1="140" x2="381" y2="120" class="dash"/>
+    <line x1="404" y1="140" x2="344" y2="140" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="406" y="158" text-anchor="end">relative wind</text>
+    <path d="M370,140 A64,64 0 0,0 367.8,123.4" class="hot"/>
+    <text class="a" x="378" y="131">&#945;</text>
+    <text class="m" x="252" y="198">against the air</text>
+
+    <text class="t" x="474" y="32">BANK ANGLE</text>
+    <text class="m" x="474" y="46">seen from behind</text>
+    <line x1="516" y1="124" x2="654" y2="124" class="dash"/>
+    <line x1="582" y1="58" x2="582" y2="172" class="dash"/>
+    <line x1="527.7" y1="90.1" x2="636.3" y2="157.9" class="disc" stroke-width="2.6"/>
+    <line x1="582" y1="124" x2="614.9" y2="71.4" class="hot" marker-end="url(#aha)"/>
+    <line x1="582" y1="124" x2="610" y2="124" class="hot" marker-end="url(#aha)"/>
+    <line x1="582" y1="71.4" x2="614.9" y2="71.4" class="dash"/>
+    <text class="a" x="620" y="66">lift</text>
+    <text class="a" x="626" y="119">steers</text>
+    <text class="m" x="578" y="56" text-anchor="end">holds it up</text>
+    <path d="M622,124 A40,40 0 0,1 615.9,145.2" class="hot"/>
+    <text class="a" x="628" y="149">&#966;</text>
+    <text class="m" x="474" y="198">about the flight path</text>
+  </svg>
+  <figcaption><b>Three angles, three different references.</b> The launch angle is measured against the horizon, the angle of attack against the oncoming air, and the bank angle about the flight path. Only the middle one drives lift, drag and the pitching moment. Angles are drawn larger than typical release values so they read at this size.</figcaption>
+  </figure>
+
+  <p class="col" style="margin-top:18px;font-size:14.5px;color:var(--muted)">A flat disc released level starts near 0° angle of attack, but as it slows and begins to drop, its angle of attack to the air climbs — approaching 90° if it ends up falling flat. That drift in angle of attack, not anything the thrower does, is what hands the disc from its turn phase to its fade phase.</p>
+
+  <figure class="dia">
+  <svg viewBox="0 0 700 205" role="img" aria-label="One trajectory with three discs drawn at the same tilt; because the flight path steepens, the relative wind arrives from further below and the angle of attack climbs from about minus one degree to twenty-seven.">
+    <path d="M40,50 C240,32 470,54 660,156" class="dash"/>
+    <g transform="translate(88.5,46.5) rotate(-4)">
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0 Z" class="fill"/>
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0" class="disc"/>
+      <line x1="-22" y1="0" x2="22" y2="0" class="disc"/>
+      <line x1="-32" y1="0" x2="34" y2="0" class="thin"/>
+    </g>
+    <line x1="140.4" y1="43.6" x2="107" y2="45.5" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="88.5" y="80" text-anchor="middle">&#945; &#8776; &#8722;1&#176;</text>
+    <text class="m" x="88.5" y="95" text-anchor="middle">still climbing</text>
+
+    <g transform="translate(353.75,58) rotate(-4)">
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0 Z" class="fill"/>
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0" class="disc"/>
+      <line x1="-22" y1="0" x2="22" y2="0" class="disc"/>
+      <line x1="-32" y1="0" x2="34" y2="0" class="thin"/>
+    </g>
+    <line x1="405.2" y1="65.7" x2="372" y2="60.7" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="353.75" y="94" text-anchor="middle">&#945; &#8776; 11&#176;</text>
+    <text class="m" x="353.75" y="109" text-anchor="middle">past trim &#8212; fade begins here</text>
+
+    <g transform="translate(619.5,135.7) rotate(-4)">
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0 Z" class="fill"/>
+      <path d="M-22,0 Q-20,-2.4 -16,-3.9 Q0,-10 16,-3.9 Q20,-2.4 22,0" class="disc"/>
+      <line x1="-22" y1="0" x2="22" y2="0" class="disc"/>
+      <line x1="-32" y1="0" x2="34" y2="0" class="thin"/>
+    </g>
+    <line x1="666.6" y1="157.6" x2="636" y2="143.3" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="619.5" y="176" text-anchor="middle">&#945; &#8776; 27&#176;</text>
+    <text class="m" x="619.5" y="191" text-anchor="middle">falling</text>
+  </svg>
+  <figcaption><b>The thrower sets the angle of attack once; the flight changes it anyway.</b> All three discs are drawn at the same attitude &#8212; the thin line through each shows it barely rotates. What changes is the direction the air arrives from, and that is what walks the disc across the 9&#176; trim angle and hands it from turn into fade.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ PHASES ============ -->
+<section id="phases">
+  <div class="sechead"><h2>Turn, glide, fade</h2><span class="tag">The three-phase flight</span></div>
+  <p class="col" style="margin-bottom:20px">A long, fast throw passes through three regimes, and the handover between them is the sign change of the pitching moment near 9° angle of attack. Watch the angle-of-attack trace on the bench above cross that line.</p>
+  <div class="phases">
+    <div class="ph"><div class="no">PHASE 1</div><h4>Turn</h4>
+      <p>High airspeed, low angle of attack. The centre of pressure sits behind the centre of gravity, the pitching moment is negative, and precession rolls the disc toward the turnover side — right for a RH backhand.</p>
+      <div class="cond">α &lt; 9° · C<sub>M</sub> &lt; 0 · rolls to OO / anhyzer</div></div>
+    <div class="ph"><div class="no">PHASE 2</div><h4>Glide</h4>
+      <p>The disc passes through the trimmed condition where the pitching moment is zero. No net precession, so it holds a line. This is the long straight middle of a good huck.</p>
+      <div class="cond">α ≈ 9° · C<sub>M</sub> = 0 · straight</div></div>
+    <div class="ph"><div class="no">PHASE 3</div><h4>Fade</h4>
+      <p>Speed has bled off, the disc is descending, the angle of attack climbs past trim. The centre of pressure moves forward, the moment goes positive, and precession rolls it back the other way.</p>
+      <div class="cond">α &gt; 9° · C<sub>M</sub> &gt; 0 · fades to IO / hyzer</div></div>
+  </div>
+
+  <figure class="dia">
+  <svg viewBox="0 0 700 195" role="img" aria-label="Three side views at increasing angle of attack: the centre of pressure sits behind the centre of gravity, then on it, then ahead of it, reversing the pitching moment and so the direction of roll.">
+    <line x1="240" y1="16" x2="240" y2="170" class="thin"/><line x1="462" y1="16" x2="462" y2="170" class="thin"/>
+    <text class="m" x="18" y="26">flight &#8594;</text>
+
+    <text class="a" x="118" y="46" text-anchor="middle">&#945; &lt; 9&#176;</text>
+    <g transform="translate(118,104) rotate(-4)"><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0 Z" class="fill"/><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0" class="disc"/><line x1="-28" y1="0" x2="28" y2="0" class="disc"/></g>
+    <line x1="188" y1="104" x2="152" y2="104" class="dash"/>
+    <circle cx="118" cy="104" r="3.4" class="dot"/><text class="m" x="118" y="124" text-anchor="middle">CG</text>
+    <circle cx="96" cy="104" r="3.6" class="adot"/>
+    <line x1="96" y1="104" x2="96" y2="62" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="90" y="58" text-anchor="end">CP</text>
+    <text x="18" y="150">CP sits behind CG</text>
+    <text class="m" x="18" y="166">nose-down &#8594; rolls to turnover</text>
+
+    <text class="a" x="350" y="46" text-anchor="middle">&#945; = 9&#176;</text>
+    <g transform="translate(350,104) rotate(-10)"><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0 Z" class="fill"/><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0" class="disc"/><line x1="-28" y1="0" x2="28" y2="0" class="disc"/></g>
+    <line x1="420" y1="104" x2="384" y2="104" class="dash"/>
+    <circle cx="350" cy="104" r="7" class="hot"/><circle cx="350" cy="104" r="3" class="adot"/>
+    <line x1="350" y1="104" x2="350" y2="62" class="hot" marker-end="url(#aha)"/>
+    <text class="m" x="350" y="126" text-anchor="middle">CP = CG</text>
+    <text x="252" y="150">trimmed</text>
+    <text class="m" x="252" y="166">no net moment &#8594; holds its line</text>
+
+    <text class="a" x="582" y="46" text-anchor="middle">&#945; &gt; 9&#176;</text>
+    <g transform="translate(582,104) rotate(-24)"><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0 Z" class="fill"/><path d="M-28,0 Q-25,-3 -21,-4.8 Q0,-12.5 21,-4.8 Q25,-3 28,0" class="disc"/><line x1="-28" y1="0" x2="28" y2="0" class="disc"/></g>
+    <line x1="652" y1="112" x2="616" y2="104" class="dash"/>
+    <circle cx="582" cy="104" r="3.4" class="dot"/><text class="m" x="576" y="124" text-anchor="end">CG</text>
+    <circle cx="604" cy="104" r="3.6" class="adot"/>
+    <line x1="604" y1="104" x2="604" y2="62" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="610" y="58">CP</text>
+    <text x="474" y="150">CP moves ahead of CG</text>
+    <text class="m" x="474" y="166">nose-up &#8594; rolls back the other way</text>
+  </svg>
+  <figcaption><b>Why the flight reverses itself halfway through.</b> As the angle of attack climbs, the centre of pressure marches forward past the centre of gravity. The pitching moment changes sign, and precession &#8212; which only ever converts that moment into roll &#8212; obediently rolls the disc the other way. Nothing about the throw changed; only the air did.</figcaption>
+  </figure>
+
+  <p class="col" style="margin-top:18px">Turn-right-then-fade-left is the classic S. How much of each phase you get is set by height and power: a throw that never gets fast enough skips the turn, and a throw that lands before it slows down never fades. This is also why hucks must be started inside-out — you are pre-loading bank that phase 1 will spend.</p>
+</section>
+
+<!-- ============ COEFFICIENTS ============ -->
+<section id="coeffs">
+  <div class="sechead"><h2>The published coefficients</h2><span class="tag">Wind tunnel vs flight fit</span></div>
+  <p class="col" style="margin-bottom:18px">Two authoritative datasets, obtained differently and disagreeing accordingly. Potts &amp; Crowther measured a t/d ≈ 0.14 disc directly in the Manchester wind tunnel; Hummel fitted hers from short real flights at UC Davis. Hummel's own recommendation is to use Potts &amp; Crowther's forces and moments with her flight-derived damping terms — which is what the bench does. The shaded band marks the angle-of-attack range your current throw actually visits.</p>
+
+  <div class="chartgrid">
+    <div class="chartcell"><span class="cap">C<sub>L</sub> — lift</span><canvas id="cCL"></canvas></div>
+    <div class="chartcell"><span class="cap">C<sub>D</sub> — drag</span><canvas id="cCD"></canvas></div>
+    <div class="chartcell"><span class="cap">C<sub>M</sub> — pitching moment</span><canvas id="cCM"></canvas></div>
+  </div>
+  <div class="legend" style="border:1px solid var(--ink);border-top:0">
+    <span><i style="background:var(--accent)"></i>Potts &amp; Crowther (wind tunnel)</span>
+    <span><i style="background:var(--teal)"></i>Hummel 2003 (flight fit)</span>
+    <span><i style="background:var(--ochre)"></i>Stilley &amp; Carstens</span>
+    <span style="color:var(--faint)">Vertical rules: α₀ = −4°, trim ≈ 9°</span>
+  </div>
+
+  <div class="col" style="margin-top:22px">
+    <p><strong>What to read off these.</strong> Lift is already positive at zero angle of attack — the disc is a cambered wing, not a flat plate, so it generates lift sitting level in the airstream. Drag is a parabola with its floor at −4°, which is why nose-up costs so much: the penalty grows with the square of how far you are off. And the pitching-moment curve is the whole flight in one line — small everywhere, but its crossing of zero is the switch between turn and fade.</p>
+    <p>The rim cavity is what makes a disc different from a plate. It holds a leading-edge separation bubble that reattaches, which shifts the aerodynamic centre aft and pushes stall out to roughly 45°, against about 35° for a thin flat plate. The Magnus force from spin is small enough that every standard model drops it.</p>
+  </div>
+</section>
+
+<!-- ============ WIND ============ -->
+<section id="wind">
+  <div class="sechead"><h2>Wind is an airspeed problem</h2><span class="tag">Four cases</span></div>
+  <p class="col" style="margin-bottom:20px">Wind does not push the disc sideways so much as it changes what the disc thinks its speed is — and lift scales with the square of that. Teach it as arithmetic on airspeed, then as an edge-exposure problem for crosswinds.</p>
+  <div class="winds">
+    <div class="wc"><h4>Headwind</h4><div class="mech">airspeed ↑ → lift ↑ → turns over</div>
+      <p>The wind adds to your airspeed. Release at 14 m/s into 5 m/s of wind and the disc flies as if thrown at 19. More lift, more pitching moment, more precession — a disc that would hold its line flips over instead.</p>
+      <div class="fix"><span>Throw</span>Flatter, nose down, more spin, more inside-out, and keep it low where the wind is slower.</div></div>
+    <div class="wc"><h4>Tailwind</h4><div class="mech">airspeed ↓ → lift ↓ → drops early</div>
+      <p>The wind subtracts. Less lift, so the disc behaves more overstable, stalls sooner and fades harder. Tailwind hucks travel a long way but arrive fast and flat, or die suddenly when lift collapses.</p>
+      <div class="fix"><span>Throw</span>More power and a slightly more open face to hold lift up. Expect no float — warn the receiver.</div></div>
+    <div class="wc"><h4>Crosswind</h4><div class="mech">exposed face ↑ or ↓</div>
+      <p>The governing rule: the disc is pushed <strong>up when its underside is exposed to the wind and down when its top is</strong>. A crosswind lifts the upwind edge and rolls the disc away from you.</p>
+      <div class="fix"><span>Throw</span>Bank the upwind edge down. For a RH thrower an inside-out forehand keeps that edge down and resists being shoved downwind.</div></div>
+    <div class="wc"><h4>Gusts &amp; gradient</h4><div class="mech">turbulence × wobble = chaos</div>
+      <p>Wind is slower near the ground and gustier higher up, so anything left above head height gets worked far harder than a waist-high throw. Turbulence also interacts with any wobble you already have, and the combination is genuinely unrepeatable.</p>
+      <div class="fix"><span>Throw</span>Low and fast. In wind, a smooth aligned high-spin release matters more than any angle choice.</div></div>
+  </div>
+
+  <figure class="dia">
+  <svg viewBox="0 0 700 200" role="img" aria-label="Two rear views in a crosswind from the left: with the upwind edge raised the wind reaches the underside and lifts it further; with the upwind edge banked down the wind presses on the top surface instead and the disc holds its line.">
+    <line x1="350" y1="18" x2="350" y2="168" class="thin"/>
+    <text class="a" x="16" y="30">wind from the left &#8594;</text>
+
+    <text class="t" x="16" y="58">UPWIND EDGE UP</text>
+    <line x1="126" y1="120" x2="286" y2="120" class="dash"/>
+    <line x1="155.2" y1="101.5" x2="256.8" y2="138.5" class="disc" stroke-width="2.6"/>
+    <line x1="66" y1="134" x2="138" y2="128" class="hot" marker-end="url(#aha)"/>
+    <line x1="66" y1="150" x2="148" y2="142" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="62" y="126" text-anchor="end">air</text>
+    <line x1="155.2" y1="98" x2="155.2" y2="76" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="166" y="80">lifted further</text>
+    <path d="M262,150 Q286,164 300,156" class="hotthin" marker-end="url(#aha)"/>
+    <text class="m" x="16" y="180">the air reaches the underside</text>
+    <text class="m" x="16" y="194">and rolls the disc away downwind</text>
+
+    <text class="t" x="378" y="58">UPWIND EDGE DOWN</text>
+    <line x1="488" y1="120" x2="648" y2="120" class="dash"/>
+    <line x1="517.2" y1="138.5" x2="618.8" y2="101.5" class="disc" stroke-width="2.6"/>
+    <line x1="428" y1="96" x2="510" y2="110" class="hot" marker-end="url(#aha)"/>
+    <line x1="428" y1="80" x2="538" y2="102" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="424" y="88" text-anchor="end">air</text>
+    <line x1="517.2" y1="146" x2="517.2" y2="164" class="hot" marker-end="url(#aha)"/>
+    <text class="a" x="528" y="164">pressed down</text>
+    <text class="m" x="378" y="180">the air meets the top surface</text>
+    <text class="m" x="378" y="194">and holds that edge down</text>
+  </svg>
+  <figcaption><b>The crosswind rule, drawn.</b> Seen from behind the thrower. The disc is pushed <b>up where its underside is exposed and down where its top is</b> &#8212; so the fix is never aim, it is banking the upwind edge down. For a right-hander that is what an inside-out forehand does naturally, which is why it beats a backhand across the wind.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ FAULTS ============ -->
+<section id="faults">
+  <div class="sechead"><h2>Faults and their physics</h2><span class="tag">Diagnose · explain · fix</span></div>
+  <div class="faults">
+    <div class="fault"><div class="nm"><h4>Nose-up release</h4><div class="sig">#1 distance killer</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>Snapping the wrist up, an upward arm path, or trying to "throw up" for distance or over a mark.</dd>
+        <dt>Physics</dt><dd>Raises the angle of attack. Drag climbs with the <em>square</em> of it, so the disc balloons, bleeds speed, stalls and drops.</dd>
+        <dt>Fix</dt><dd>Flat to slightly nose-down, with the energy driving forward rather than up.</dd>
+        <dt>Try it</dt><dd>On the bench, run nose angle from 0° to 15° and watch range fall while peak height rises.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Insufficient spin</h4><div class="sig">low advance ratio</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>No wrist snap, a loose grip, or "pushing" the disc instead of releasing it.</dd>
+        <dt>Physics</dt><dd>Weak gyroscopic stability. The off-centre lift force twists the disc freely, giving early fade and unpredictable flight.</dd>
+        <dt>Fix</dt><dd>Firm grip, aggressive wrist snap. Spin is a separate skill from power and must be trained as one.</dd>
+        <dt>Try it</dt><dd>Halve the spin slider and watch lateral drift roughly double.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Off-axis torque</h4><div class="sig">wobble — not the same as low spin</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>The wrist rolling over up or down at release, or releasing off the wrong part of the rim, tilting the spin axis away from the disc's own axis.</dd>
+        <dt>Physics</dt><dd>The misaligned spin creates a turbulent pocket at the rim. The disc flies as if more understable, loses distance, and is badly exposed upwind.</dd>
+        <dt>Fix</dt><dd>Align disc plane with spin axis and release smoothly. Set your release angle by bending at the waist, not by cocking the wrist.</dd>
+        <dt>Tell</dt><dd>A throw that holds its line downwind but flips out of the hand upwind is wobble, not spin. Confirm on slow-motion video — it is perfectly possible to have lots of spin <em>and</em> lots of wobble.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Power without spin</h4><div class="sig">turnover</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>Adding speed to a throw without adding wrist snap.</dd>
+        <dt>Physics</dt><dd>Lift and moment scale with v², but the disc's resistance to being twisted scales with spin. The advance ratio drops, so the stronger force meets a weaker gyroscope and the disc flips.</dd>
+        <dt>Fix</dt><dd>Every increase in power must be matched by an increase in spin. Above roughly 20 m/s, also start the disc more inside-out.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Rounding</h4><div class="sig">backhand</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>Pulling the disc in an arc across the body instead of straight through.</dd>
+        <dt>Physics</dt><dd>Not aerodynamic — geometric. It moves the release point and release angle, which wrecks accuracy before the air ever gets involved.</dd>
+        <dt>Fix</dt><dd>Straight pull-through; set angle at the waist.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Elbow flare &amp; pronation</h4><div class="sig">forehand</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>Dropping or flaring the elbow away from the ribs; pronating the wrist over the forearm through release.</dd>
+        <dt>Physics</dt><dd>Pronation rolls the disc as it leaves, which is off-axis torque by another name. Elbow flare costs the leverage that makes spin cheap.</dd>
+        <dt>Fix</dt><dd>Elbow tight to the ribs. Externally rotate the wrist — thumb toward the ground like a hitch-hiker. Most of your spin comes from the wrist: turn the doorknob.</dd></dl></div></div>
+
+    <div class="fault"><div class="nm"><h4>Not adjusting for wind at all</h4><div class="sig">most common tactical error</div></div>
+      <div class="bd"><dl>
+        <dt>Cause</dt><dd>Throwing the identical release in every condition and correcting only with aim.</dd>
+        <dt>Physics</dt><dd>Wind changes the disc's airspeed, and lift goes as airspeed squared. Aim cannot compensate for a different flight shape.</dd>
+        <dt>Fix</dt><dd>Change angle, power and spin — then aim.</dd></dl></div></div>
+  </div>
+</section>
+
+<!-- ============ CONDITIONS ============ -->
+<section id="conditions">
+  <div class="sechead"><h2>Conditions and equipment</h2><span class="tag">Second-order, still real</span></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Factor</th><th>Direction of effect</th><th>What you tell the player</th></tr></thead>
+      <tbody>
+        <tr><td><b>Elevation</b></td><td>Density falls ~3–4% per 1,000 ft; about 15% at 5,000 ft.</td><td>Thinner air means less lift <em>and</em> less drag: less turn early, harder fade late. Neutral discs act overstable. Raw distance can go up. Expect it above ~4,000 ft.</td></tr>
+        <tr><td><b>Temperature</b></td><td>Warm air is less dense; cold air denser.</td><td>Warm: more distance, less float. Cold: more lift and more turn, but stiffer plastic and numb hands cost you grip and snap — usually the bigger effect.</td></tr>
+        <tr><td><b>Humidity</b></td><td>Very slightly <em>lowers</em> density (water vapour is lighter than dry air).</td><td>Smallest of the four. Real, but swamped by what the weather is doing to your hands.</td></tr>
+        <tr><td><b>Disc wear</b></td><td>A beaten-in rim is rougher and more turbulent.</td><td>Old discs fly more understable and turn over more easily. On the bench this is the trim-angle slider — raise it to simulate a beat-up disc.</td></tr>
+        <tr><td><b>Mold</b></td><td>The Ultra-Star is a throw-and-catch mold.</td><td>It is stable and catchable, not a distance driver. Do not benchmark it against disc-golf numbers.</td></tr>
+        <tr><td><b>Rain</b></td><td>Grip loss at release.</td><td>Less spin and more off-axis torque — wobble, not just weakness. Catch two-handed with a pancake, not on the rim.</td></tr>
+        <tr><td><b>Ground effect</b></td><td>Extra lift from the air cushion below.</td><td>Very low throws gain a little lift. Useful for fast skimming throws under a defender's reach.</td></tr>
+        <tr><td><b>Throwing on the move</b></td><td>Runner velocity adds vectorially.</td><td>A step or pivot into the throw genuinely adds release speed and changes the effective release angle.</td></tr>
+        <tr><td><b>Sun</b></td><td>Not aerodynamic.</td><td>Blinds catchers and throwers. Plan the throw lower or offset; it is a real constraint on the field.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col" style="margin-top:20px">
+    <h3 style="font-size:18px;margin-bottom:8px">Inverted throws</h3>
+    <p>A hammer is released near-vertical and flies at a very high inclination, with lift acting almost sideways. Precession rolls the inverted disc through vertical and it fades back down as speed bleeds off — it "should end upside down and flat". A <em class="term">blade</em> is a hammer that never flattens; a <em class="term">scoober</em> is the same idea from a forehand grip. Inverted flight works because the disc has lift-generating surfaces on both sides. On the bench, a hammer is a bank near 80° with a low nose — try it.</p>
+  </div>
+</section>
+
+<!-- ============ STAGES ============ -->
+<section id="stages">
+  <div class="sechead"><h2>Teaching order</h2><span class="tag">A real progression</span></div>
+  <ol class="stages">
+    <li><h4>Build a clean, spin-first release</h4>
+      <p>Flat to slightly nose-down, firm grip, aggressive wrist snap — before any talk of power or angles. If throws wobble, diagnose spin versus off-axis torque on slow-motion video: low spin means more snap; wobble with good snap means axis alignment, so set the angle at the waist, not the wrist.</p>
+      <div class="bench-mark">Benchmark: <b>accurate, flat, non-wobbling backhand at 5 → 10 → 20 → 30 m</b> before adding IO/OO.</div></li>
+    <li><h4>Teach nose angle as the master distance variable</h4>
+      <p>Cue: drive the energy forward, keep the nose down. Hucks that balloon and drop are almost always nose-up. Hucks that flip over are over-power, under-spin, or too much outside-in.</p>
+      <div class="bench-mark">Benchmark: <b>consistent 40 m+ hucks holding an S-line without ballooning.</b></div></li>
+    <li><h4>Teach wind as airspeed and edge exposure</h4>
+      <p>Two rules, drilled. Headwind: more effective speed, so flatter, nose down, more spin, more IO. Tailwind: more height and power, expect the drop. Crosswind: the wind pushes the disc up when the underside is exposed, so bank the upwind edge down.</p>
+      <div class="bench-mark">Benchmark: <b>the same 30 m throw completed upwind, downwind and in both crosswinds</b> — by adjusting angle, power and spin, not just aim.</div></li>
+    <li><h4>Match spin to power, then adjust for kit and conditions</h4>
+      <p>Any power increase must be matched by spin so the advance ratio holds. Then layer on altitude (less turn, harder fade, flatter releases), temperature (cold turns more but costs grip) and disc age (beat-in discs turn over more).</p>
+      <div class="bench-mark">Thresholds that change the advice: <b>switch from "add spin" to "fix axis alignment"</b> when video shows wobble despite good snap; <b>switch flat → more IO past ~20 m/s</b> or into any headwind; <b>expect earlier fade above ~4,000 ft.</b></div></li>
+  </ol>
+</section>
+
+<!-- ============ NUMBERS ============ -->
+<section id="numbers">
+  <div class="sechead"><h2>Numbers</h2><span class="tag">Hard-codeable</span></div>
+  <div class="tablewrap" style="margin-bottom:22px">
+    <table>
+      <thead><tr><th>Source</th><th class="n">C<sub>L0</sub></th><th class="n">C<sub>Lα</sub> /rad</th><th class="n">C<sub>D0</sub></th><th class="n">C<sub>Dα</sub> /rad²</th><th class="n">C<sub>M0</sub></th><th class="n">C<sub>Mα</sub> /rad</th></tr></thead>
+      <tbody>
+        <tr><td><b>Potts &amp; Crowther</b> — wind tunnel</td><td class="n">0.15–0.2</td><td class="n">2.96</td><td class="n">0.08</td><td class="n">2.72</td><td class="n">−0.02</td><td class="n">0.13</td></tr>
+        <tr><td><b>Hummel 2003</b> — flight fit</td><td class="n">0.33</td><td class="n">1.91</td><td class="n">0.18</td><td class="n">0.69</td><td class="n">−0.08</td><td class="n">0.43</td></tr>
+        <tr><td><b>Morrison</b> — simulation</td><td class="n">0.15</td><td class="n">1.4</td><td class="n">0.08</td><td class="n">2.72</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td><b>Stilley &amp; Carstens</b></td><td class="n">0.15</td><td class="n">2.8</td><td class="n">0.1</td><td class="n">2.5</td><td class="n">−0.05</td><td class="n">0.25</td></tr>
+      </tbody>
+      <caption>Angles in radians. Hummel's damping terms: C<sub>Mq</sub> ≈ −0.014, C<sub>Rp</sub> ≈ −0.013, C<sub>Nr</sub> ≈ −3.4×10⁻⁵.</caption>
+    </table>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Quantity</th><th class="n">Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Mass</td><td class="n">0.175 kg</td><td>Discraft Ultra-Star, USA Ultimate standard since 1981</td></tr>
+        <tr><td>Diameter</td><td class="n">0.269 m</td><td>10.75 in</td></tr>
+        <tr><td>Planform area</td><td class="n">0.057 m²</td><td>Thickness-to-chord ratio ≈ 0.14</td></tr>
+        <tr><td>I<sub>zz</sub> (spin axis)</td><td class="n">0.00235 kg·m²</td><td>Hummel 2003</td></tr>
+        <tr><td>I<sub>xx</sub> = I<sub>yy</sub></td><td class="n">0.00122 kg·m²</td><td>Transverse</td></tr>
+        <tr><td>Air density, sea level</td><td class="n">1.23 kg/m³</td><td>g = 9.79 m/s²</td></tr>
+        <tr><td>Zero-lift angle α₀</td><td class="n">−4°</td><td>Also the minimum-drag angle</td></tr>
+        <tr><td>Trimmed condition</td><td class="n">≈ 8–9°</td><td>C<sub>M</sub> = 0; the turn/fade switch</td></tr>
+        <tr><td>Stall</td><td class="n">≈ 45°</td><td>vs ~35° for a thin flat plate — the rim cavity keeps flow attached</td></tr>
+        <tr><td>Best lift-to-drag</td><td class="n">2.3–3</td><td>At 10–20° AoA (Lorenz, 204 g disc); CFD suggests 3–5</td></tr>
+        <tr><td>Typical release spin</td><td class="n">≈ 50 rad/s</td><td>About 8 rev/s</td></tr>
+        <tr><td>Measured spin decay</td><td class="n">6.5 → 5.5 rev/s</td><td>Over one flight (Lorenz, instrumented disc)</td></tr>
+        <tr><td>Short-pass speed</td><td class="n">7–14 m/s</td><td></td></tr>
+        <tr><td>Huck / pull speed</td><td class="n">25–30 m/s</td><td>Discs clocked over 31 m/s</td></tr>
+        <tr><td>Typical advance ratio</td><td class="n">≈ 0.5</td><td>AdvR = Ω·d / (2V) — rim speed over forward speed</td></tr>
+        <tr><td>Reynolds number</td><td class="n">≈ 2.6×10⁵</td><td>At 14 m/s; little Reynolds effect across normal speeds</td></tr>
+        <tr><td>Reference throw</td><td class="n">~25 m, 3.5 s</td><td>14 m/s, 50 rad/s, 5° AoA, peak 2.55 m (Hummel)</td></tr>
+        <tr><td>Expert distance-disc range</td><td class="n">≈ 123 m</td><td>26 launches at 29–31 m/s (Pozzy 2000). Not an Ultra-Star.</td></tr>
+        <tr><td>World record throw</td><td class="n">338 m</td><td>D. Wiggins Jr., 2016, 154 g distance driver, 38–42 mph tailwind</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="glossary">
+  <div class="sechead"><h2>Glossary</h2><span class="tag">Say it the same way twice</span></div>
+  <div class="gloss">
+    <dl>
+      <dt>Angle of attack (AoA, nose angle)</dt><dd>Angle between the disc plane and the oncoming air. Drives lift, drag and pitching moment. Changes during flight.</dd>
+      <dt>Launch angle</dt><dd>Angle of the velocity vector to the horizon.</dd>
+      <dt>Bank / roll angle</dt><dd>Tilt about the direction of travel.</dd>
+      <dt>Hyzer / anhyzer</dt><dd>Disc-golf bank terms. Hyzer tilts the top away from the release side; anhyzer the opposite.</dd>
+      <dt>Inside-out (IO) / outside-in (OO)</dt><dd>Ultimate's bank terms. IO corresponds to hyzer, OO to anhyzer.</dd>
+      <dt>Turn</dt><dd>The high-speed early curve, toward the turnover side.</dd>
+      <dt>Fade</dt><dd>The low-speed late curve back the other way.</dd>
+      <dt>Precession</dt><dd>The gyroscopic response, offset 90° in the spin direction. The source of turn and fade.</dd>
+    </dl>
+    <dl>
+      <dt>Advance ratio</dt><dd>Rim speed over forward speed, Ωd/(2V). Measures spin relative to airspeed. Typically ≈ 0.5.</dd>
+      <dt>Static margin</dt><dd>Non-dimensional distance from aerodynamic centre to centre of gravity. Governs stability together with advance ratio.</dd>
+      <dt>Off-axis torque (OAT)</dt><dd>A release force that tilts the spin axis off the disc's symmetry axis, producing wobble.</dd>
+      <dt>Wobble / flutter</dt><dd>Spin axis not perpendicular to the disc plane. Distinct from low spin.</dd>
+      <dt>Pitching moment</dt><dd>The aerodynamic moment tending to pitch the nose up or down. Its sign change near 9° drives turn into fade.</dd>
+      <dt>Trimmed condition</dt><dd>The angle of attack at which the pitching moment is zero, enabling stable glide.</dd>
+      <dt>Reynolds number</dt><dd>Ratio of inertial to viscous forces; ≈ 2.6×10⁵ for a normal throw.</dd>
+      <dt>Magnus effect</dt><dd>Spin-induced side force. Small enough to be neglected for a disc.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<section id="notes">
+  <div class="sechead"><h2>Model notes and caveats</h2><span class="tag">Read before you quote a number</span></div>
+  <div class="col notes">
+    <h4>What the bench actually integrates</h4>
+    <p>Lift L = ½ρv²A(C<sub>L0</sub> + C<sub>Lα</sub>α) and drag D = ½ρv²A(C<sub>D0</sub> + C<sub>Dα</sub>(α−α₀)²), with the pitching moment M = ½ρv²Ad(C<sub>M</sub> + C<sub>Mq</sub>q) applied as gyroscopic precession of the disc's spin axis, p = M/(I<sub>zz</sub>Ω). Roll damping and spin decay follow Hummel's damping terms. Integration is semi-implicit Euler at 2 ms.</p>
+
+    <h4>Three deliberate departures from the published constants</h4>
+    <p><strong>Trim angle is a control, not a constant.</strong> The published C<sub>M0</sub> = −0.02 puts the moment's zero crossing at 8.8°, but it was measured on a generic Wham-O-type Frisbee, not an Ultra-Star — a less stable disc. The bench exposes the crossing directly as the trim slider and defaults to 5°, which reproduces the flight a broken-in Ultra-Star actually has: straight, then a late fade. Set it to 8.8° to see the published disc; raise it further to simulate a beat-up one.</p>
+    <p><strong>Spin decay is calibrated to measured flights.</strong> Hummel's C<sub>Nr</sub> = −3.4×10⁻⁵ under a dimensional reading of the rate gives almost no decay. The bench uses −1.2×10⁻⁴, which reproduces Lorenz's instrumented measurement of roughly 6.5 → 5.5 rev/s across a flight.</p>
+    <p><strong>Past stall, the fits are blended out.</strong> The linear-lift and quadratic-drag fits are only valid to about 30°. Beyond that the model blends smoothly into flat-plate behaviour so that the end-of-flight nosedive stays physical, and the pitching-moment growth saturates rather than running away.</p>
+
+    <h4>Wobble is a stand-in, not a solution</h4>
+    <p>Off-axis torque is a genuine rigid-body nutation problem and is not solved here. The wobble slider applies a decaying drag penalty and a decaying shift toward understability, sized to the effect the literature describes qualitatively. It will show you the right <em>shape</em> of the mistake and should not be read as a quantitative prediction.</p>
+
+    <h4>Caveats that come with the source material</h4>
+    <p>The two authoritative coefficient sets disagree because they were obtained differently, and most of the aero literature tested generic Frisbee or golf-disc shapes rather than the Ultra-Star specifically. Treat every coefficient as a representative range. Simulation distances are idealised: the ~186 m "maximum range" figure is a wings-level optimum, roughly double what expert throwers actually achieve, and far beyond a throw-and-catch mold. Spin-decay and lift-to-drag figures come from single-disc instrumented studies on 204 g and 210 g discs.</p>
+    <p>One correction worth making to students directly: community coaching often attributes turnover to speed. The published physics says it is the <em>angle of attack to the air</em> that determines which way the disc rolls. Speed is a close-enough proxy on the field but it is not the cause. And the "equal transit time" Bernoulli explanation of lift that appears on many disc blogs is simply wrong, even though the pressure difference it points at is real.</p>
+
+    <h4>Sources</h4>
+    <ul class="refs">
+      <li>Potts, J.R. &amp; Crowther, W.J. (2002). Frisbee™ Aerodynamics. AIAA 2002-3150, 20th AIAA Applied Aerodynamics Conference, St. Louis. doi:10.2514/6.2002-3150</li>
+      <li>Potts, J.R. (2005). Disc-wing Aerodynamics. PhD thesis, University of Manchester.</li>
+      <li>Crowther, W.J. &amp; Potts, J.R. (2007). Simulation of a spin-stabilised sports disc. <em>Sports Engineering</em>.</li>
+      <li>Hummel, S.A. (2003). Frisbee Flight Simulation and Throw Biomechanics. MSc thesis, UC Davis.</li>
+      <li>Lorenz, R.D. (2005). Flight and attitude dynamics measurements of an instrumented Frisbee. <em>Measurement Science and Technology</em> 16, 738–748.</li>
+      <li>Lissaman, P. &amp; Hubbard, M. (2010). Maximum range of flying discs. <em>Procedia Engineering</em> 2, 2529–2535.</li>
+      <li>Nakamura, Y. &amp; Fukamachi, N. (1991). Visualisation of the flow past a Frisbee.</li>
+      <li>Measurement of Flight Dynamics of a Frisbee Using a Triaxial MEMS Gyroscope (MDPI).</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span>Ultra-Star Flight Bench · coaching reference</span>
+  <span>Model: Potts &amp; Crowther forces + Hummel damping · integrated at 2 ms</span>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const DEG=Math.PI/180, $=id=>document.getElementById(id);
+
+/* ---------------- physics ---------------- */
+const SETS={
+  pc :{n:'P&C',   CL0:0.15,CLa:2.96,CD0:0.08,CDa:2.72,CM0:-0.02,CMa:0.13, trim:8.8},
+  hum:{n:'Hummel',CL0:0.33,CLa:1.91,CD0:0.18,CDa:0.69,CM0:-0.08,CMa:0.43, trim:10.7},
+  sc :{n:'S&C',   CL0:0.15,CLa:2.80,CD0:0.10,CDa:2.50,CM0:-0.05,CMa:0.25, trim:11.5}
+};
+const A0=-4*DEG, CMq=-0.014, CRp=-0.013, CNr=-1.2e-4;
+const MASS=0.175, DIA=0.269, AREA=0.057, IZZ=0.00235, GRAV=9.79;
+
+const v3=(x,y,z)=>({x,y,z});
+const add=(a,b)=>v3(a.x+b.x,a.y+b.y,a.z+b.z);
+const sub=(a,b)=>v3(a.x-b.x,a.y-b.y,a.z-b.z);
+const mul=(a,k)=>v3(a.x*k,a.y*k,a.z*k);
+const dot=(a,b)=>a.x*b.x+a.y*b.y+a.z*b.z;
+const crs=(a,b)=>v3(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x);
+const nrm=a=>{const l=Math.hypot(a.x,a.y,a.z)||1e-9;return mul(a,1/l);};
+function rot(v,axis,th){const k=nrm(axis),c=Math.cos(th),s=Math.sin(th);
+  return add(add(mul(v,c),mul(crs(k,v),s)),mul(k,dot(k,v)*(1-c)));}
+
+function airDensity(alt,tC){
+  const T=tC+273.15;
+  const p=101325*Math.pow(1-2.25577e-5*Math.max(0,alt),5.25588);
+  const psat=610.78*Math.pow(10,7.5*tC/(tC+237.3)), pv=0.5*psat;
+  return (p-pv)/(287.058*T)+pv/(461.495*T);
+}
+function blendW(a){const lo=30*DEG,hi=55*DEG;const t=Math.min(1,Math.max(0,(a-lo)/(hi-lo)));return t*t*(3-2*t);}
+function coeffs(a,C,dCd0,dTrim){
+  const w=blendW(Math.abs(a));
+  const cl=(1-w)*(C.CL0+C.CLa*a)+w*(2*Math.sin(a)*Math.cos(a));
+  const cd=(1-w)*(C.CD0+dCd0+C.CDa*(a-A0)*(a-A0))+w*(0.10+dCd0+2*Math.sin(a)*Math.sin(a));
+  const aS=Math.tanh(a/(38*DEG))*(38*DEG);
+  const cm=C.CMa*(aS-(C.trimUse+dTrim)*DEG);
+  return {cl,cd,cm};
+}
+
+function simulate(o){
+  const C=Object.assign({},SETS[o.set]); C.trimUse=o.trim;
+  const rho=airDensity(o.alt,o.temp), dt=0.002;
+  const g=o.launch*DEG, s=o.hand;
+  let vh0=v3(Math.cos(g),0,Math.sin(g));
+  let n=rot(v3(-Math.sin(g),0,Math.cos(g)),v3(0,-1,0),o.aoa*DEG);
+  n=nrm(rot(n,vh0,o.bank*DEG));
+  let r=v3(0,0,o.height), v=mul(vh0,o.speed), W=o.spin, pR=0,qR=0,t=0,peak=o.height;
+  const wh=o.wdir*DEG, wb=v3(-Math.cos(wh)*o.wind, Math.sin(wh)*o.wind, 0);
+  const wob=o.wobble/100;
+  const path=[]; let maxA=-99, aAtEnd=0, hdgMax=0, hdgMin=0;
+
+  while(t<22){
+    const decay=Math.exp(-t/0.85);
+    const dCd0=0.055*wob*decay, dTrim=5.5*wob*decay;
+    const grad=Math.min(1.2,Math.pow(Math.max(r.z,0.25)/2,0.16));
+    const vair=sub(v,mul(wb,grad));
+    const V=Math.max(Math.hypot(vair.x,vair.y,vair.z),0.5), vh=mul(vair,1/V);
+    const a=Math.asin(Math.max(-1,Math.min(1,-dot(vh,n))));
+    const cf=coeffs(a,C,dCd0,dTrim);
+    let lh=sub(n,mul(vh,dot(n,vh)));
+    lh=Math.hypot(lh.x,lh.y,lh.z)<1e-6?v3(0,0,0):nrm(lh);
+    const jr=nrm(crs(vh,n));
+    const qA=0.5*rho*V*V*AREA, qd=qA*DIA;
+    const F=add(add(mul(lh,qA*cf.cl),mul(vh,-qA*cf.cd)),v3(0,0,-MASS*GRAV));
+    v=add(v,mul(F,dt/MASS));
+    const tau=add(mul(jr,qd*(cf.cm+CMq*qR)),mul(vh,qd*CRp*pR));
+    const dn=mul(tau,1/(IZZ*s*Math.max(W,4)));
+    n=nrm(add(n,mul(dn,dt)));
+    const om=crs(n,dn); pR=dot(om,vh); qR=dot(om,jr);
+    W=Math.max(0,W+qd*CNr*W*dt/IZZ);
+    r=add(r,mul(v,dt)); t+=dt;
+    if(r.z>peak)peak=r.z;
+    const hdg=Math.atan2(-v.y,v.x)/DEG;
+    if(hdg>hdgMax)hdgMax=hdg; if(hdg<hdgMin)hdgMin=hdg;
+    if(a>maxA && r.z>0.6)maxA=a; aAtEnd=a;
+    if(!path.length||t-path[path.length-1].t>=0.016)
+      path.push({x:r.x,y:-r.y,z:r.z,t,a:a/DEG,V:Math.hypot(v.x,v.y,v.z),W,hdg,live:r.z>0.6});
+    if(r.z<=0)break;
+  }
+  path.push({x:r.x,y:-r.y,z:Math.max(r.z,0),t,a:aAtEnd/DEG,V:Math.hypot(v.x,v.y,v.z),W,hdg:Math.atan2(-v.y,v.x)/DEG,live:false});
+  return {path,rho,down:r.x,lat:-r.y,time:t,peak,spinEnd:W,vEnd:Math.hypot(v.x,v.y,v.z),
+    advR:o.spin*DIA/(2*o.speed), maxA:maxA/DEG, hdgMax, hdgMin};
+}
+
+/* ---------------- state ---------------- */
+const HANDS=[
+  {k:'rbh',label:'RH backhand',s:-1,turn:'right',io:'left'},
+  {k:'rfh',label:'RH forehand',s: 1,turn:'left', io:'right'},
+  {k:'lbh',label:'LH backhand',s: 1,turn:'left', io:'right'},
+  {k:'lfh',label:'LH forehand',s:-1,turn:'right',io:'left'}
+];
+const PRESETS={
+  'Standard backhand':{hand:'rbh',speed:14,spin:50,aoa:5,launch:6,bank:0,height:1.5,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Big huck (IO)':{hand:'rbh',speed:26,spin:95,aoa:2,launch:12,bank:-12,height:1.6,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Nose-up mistake':{hand:'rbh',speed:20,spin:70,aoa:10,launch:10,bank:0,height:1.5,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Under-spun':{hand:'rbh',speed:24,spin:26,aoa:3,launch:10,bank:-8,height:1.5,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Wobbly release':{hand:'rbh',speed:22,spin:60,aoa:4,launch:10,bank:-6,height:1.5,wobble:75,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Upwind flick':{hand:'rfh',speed:18,spin:80,aoa:0,launch:5,bank:-8,height:1.2,wobble:0,trim:5,set:'pc',wind:7,wdir:0,alt:0,temp:14},
+  'Downwind pull':{hand:'rbh',speed:27,spin:85,aoa:5,launch:22,bank:-10,height:1.7,wobble:0,trim:5,set:'pc',wind:7,wdir:180,alt:0,temp:20},
+  'Hammer':{hand:'rfh',speed:17,spin:70,aoa:6,launch:24,bank:80,height:2.0,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:0,temp:20},
+  'Altitude (Denver)':{hand:'rbh',speed:24,spin:80,aoa:3,launch:11,bank:-12,height:1.6,wobble:0,trim:5,set:'pc',wind:0,wdir:0,alt:1600,temp:24}
+};
+let S=Object.assign({},PRESETS['Standard backhand']);
+let REF=null, REFS=null, playT=null, playing=false;
+
+/* ---------------- canvas helpers ---------------- */
+function css(k){return getComputedStyle(document.documentElement).getPropertyValue('--'+k).trim();}
+function setup(cv,h){
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=cv.parentElement.clientWidth;
+  cv.style.height=h+'px'; cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const g=cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
+  return {g,w,h};
+}
+function step(range,target){
+  const raw=Math.max(1e-6,range)/Math.max(1,target);
+  const p=Math.pow(10,Math.floor(Math.log10(raw))), n=raw/p;
+  return (n<1.5?1:n<3?2:n<7?5:10)*p;
+}
+
+/* ---------------- trajectory plots ---------------- */
+function drawTraj(){
+  const R=window.__R, ref=REF;
+  const maxX=Math.max(30, R.down*1.08, ref?ref.down*1.08:0, Math.max(...R.path.map(p=>p.x))*1.05);
+  const xs=step(maxX,6);
+  const S1=setup($('cSide'),190), S2=setup($('cTop'),210);
+  const ink=css('ink'), muted=css('muted'), faint=css('faint'), grid=css('grid'), gs=css('grid-strong'),
+        acc=css('accent'), teal=css('teal'), panel=css('panel'), sunk=css('sunk');
+
+  /* ---- side elevation ---- */
+  {
+    const {g,w,h}=S1, L=42,Rp=14,T=26,B=24, pw=w-L-Rp, ph=h-T-B;
+    const maxZ=Math.max(4, R.peak*1.18, ref?ref.peak*1.18:0), zs=step(maxZ,4);
+    const X=x=>L+x/maxX*pw, Z=z=>T+ph-z/maxZ*ph;
+    g.fillStyle=panel; g.fillRect(0,0,w,h);
+    g.font='10px '+"'IBM Plex Mono',monospace"; g.textBaseline='middle';
+    for(let z=0;z<=maxZ+1e-9;z+=zs){
+      g.strokeStyle=grid; g.lineWidth=1; g.beginPath(); g.moveTo(L,Math.round(Z(z))+.5); g.lineTo(w-Rp,Math.round(Z(z))+.5); g.stroke();
+      g.fillStyle=faint; g.textAlign='right'; g.fillText(z.toFixed(zs<1?1:0),L-6,Z(z));
+    }
+    for(let x=0;x<=maxX+1e-9;x+=xs){
+      g.strokeStyle=grid; g.beginPath(); g.moveTo(Math.round(X(x))+.5,T); g.lineTo(Math.round(X(x))+.5,T+ph); g.stroke();
+    }
+    // catch band
+    g.strokeStyle=gs; g.setLineDash([3,3]); g.lineWidth=1;
+    g.beginPath(); g.moveTo(L,Math.round(Z(2.1))+.5); g.lineTo(w-Rp,Math.round(Z(2.1))+.5); g.stroke(); g.setLineDash([]);
+    // ground
+    g.strokeStyle=ink; g.lineWidth=1.25; g.beginPath(); g.moveTo(L,Math.round(Z(0))+.5); g.lineTo(w-Rp,Math.round(Z(0))+.5); g.stroke();
+    g.fillStyle=faint; g.textAlign='left'; g.fillText('metres',6,T-14);
+    const trace=(p,col,wd)=>{g.strokeStyle=col;g.lineWidth=wd;g.beginPath();
+      p.forEach((q,i)=>i?g.lineTo(X(q.x),Z(Math.max(q.z,0))):g.moveTo(X(q.x),Z(q.z)));g.stroke();};
+    g.save(); g.beginPath(); g.rect(L,0,pw,T+ph); g.clip();
+    if(ref) trace(ref.path,teal,1.4);
+    trace(R.path,acc,2);
+    if(playT!=null){const q=sample(R.path,playT); g.fillStyle=acc; g.beginPath(); g.arc(X(q.x),Z(Math.max(q.z,0)),4,0,7); g.fill();}
+    g.restore();
+    g.textAlign='center'; g.fillStyle=faint;
+    const cut=w-Rp-112;
+    for(let x=xs;x<=maxX-xs/2;x+=xs) if(X(x)<cut) g.fillText(x.toFixed(0),X(x),h-11);
+    g.textAlign='right'; g.fillText('metres downrange',w-Rp,h-11);
+  }
+
+  /* ---- plan view over the field ---- */
+  {
+    const {g,w,h}=S2, L=42,Rp=14,T=26,B=24, pw=w-L-Rp, ph=h-T-B;
+    const spread=Math.max(6, Math.abs(R.lat)*1.5, ref?Math.abs(ref.lat)*1.5:0,
+      Math.max(...R.path.map(p=>Math.abs(p.y)))*1.3);
+    const maxY=Math.min(20, Math.max(6,spread)), ys=step(maxY*2,4);
+    const X=x=>L+x/maxX*pw, Y=y=>T+ph/2-y/maxY*(ph/2);
+    g.fillStyle=panel; g.fillRect(0,0,w,h);
+    g.fillStyle=sunk; g.fillRect(L,T,pw,ph);
+    g.font='10px '+"'IBM Plex Mono',monospace"; g.textBaseline='middle';
+    const yt=[0]; for(let y=ys;y<=maxY+1e-9;y+=ys){yt.push(y);yt.push(-y);}
+    yt.forEach(y=>{
+      g.strokeStyle=Math.abs(y)<1e-6?gs:grid; g.lineWidth=1;
+      g.beginPath(); g.moveTo(L,Math.round(Y(y))+.5); g.lineTo(w-Rp,Math.round(Y(y))+.5); g.stroke();
+      g.fillStyle=faint; g.textAlign='right';
+      g.fillText(y===0?'0':(y>0?'R':'L')+Math.abs(y).toFixed(ys<1?1:0),L-6,Y(y));
+    });
+    // sidelines at +/- 18.5 m
+    [18.5,-18.5].forEach(y=>{ if(Math.abs(y)<=maxY){
+      g.strokeStyle=gs;g.lineWidth=1.5;g.beginPath();g.moveTo(L,Math.round(Y(y))+.5);g.lineTo(w-Rp,Math.round(Y(y))+.5);g.stroke();}});
+    for(let x=0;x<=maxX+1e-9;x+=xs){
+      g.strokeStyle=grid; g.beginPath(); g.moveTo(Math.round(X(x))+.5,T); g.lineTo(Math.round(X(x))+.5,T+ph); g.stroke();
+    }
+    // goal line at 18 m
+    if(18<=maxX){ g.strokeStyle=gs; g.lineWidth=1.5; g.setLineDash([5,4]);
+      g.beginPath(); g.moveTo(Math.round(X(18))+.5,T); g.lineTo(Math.round(X(18))+.5,T+ph); g.stroke(); g.setLineDash([]);
+      g.fillStyle=faint; g.textAlign='left'; g.fillText('goal line 18 m',X(18)+5,T+9); }
+    g.strokeStyle=ink; g.lineWidth=1; g.strokeRect(L+.5,T+.5,pw-1,ph-1);
+    const trace=(p,col,wd)=>{g.strokeStyle=col;g.lineWidth=wd;g.beginPath();
+      p.forEach((q,i)=>i?g.lineTo(X(q.x),Y(q.y)):g.moveTo(X(q.x),Y(q.y)));g.stroke();};
+    g.save(); g.beginPath(); g.rect(L,T,pw,ph); g.clip();
+    if(ref) trace(ref.path,teal,1.4);
+    trace(R.path,acc,2);
+    if(playT!=null){const q=sample(R.path,playT); g.fillStyle=acc; g.beginPath(); g.arc(X(q.x),Y(q.y),4,0,7); g.fill();}
+    g.restore();
+    g.textAlign='center'; g.fillStyle=faint;
+    const cut=w-Rp-118;
+    for(let x=xs;x<=maxX-xs/2;x+=xs) if(X(x)<cut) g.fillText(x.toFixed(0),X(x),h-11);
+    g.textAlign='right'; g.fillText('lateral drift, metres',w-Rp,h-11);
+  }
+}
+function sample(p,t){
+  for(let i=1;i<p.length;i++) if(p[i].t>=t){
+    const a=p[i-1],b=p[i],f=(t-a.t)/Math.max(1e-6,b.t-a.t);
+    return {x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f,z:a.z+(b.z-a.z)*f};
+  }
+  return p[p.length-1];
+}
+
+/* ---------------- release attitude widget ---------------- */
+function arrowTo(g,x1,y1,x2,y2,col,wd){
+  g.strokeStyle=col; g.lineWidth=wd||1.7; g.lineCap='round';
+  g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke();
+  const a=Math.atan2(y2-y1,x2-x1);
+  g.fillStyle=col; g.beginPath(); g.moveTo(x2,y2);
+  g.lineTo(x2-7.5*Math.cos(a-0.42),y2-7.5*Math.sin(a-0.42));
+  g.lineTo(x2-7.5*Math.cos(a+0.42),y2-7.5*Math.sin(a+0.42));
+  g.closePath(); g.fill(); g.lineCap='butt';
+}
+function drawAttitude(){
+  const cv=$('cAtt'); if(!cv) return;
+  const {g,w,h}=setup(cv,118);
+  const ink=css('ink'),muted=css('muted'),faint=css('faint'),grid=css('grid'),acc=css('accent'),panel=css('panel');
+  const H=HANDS.find(x=>x.k===S.hand);
+  g.fillStyle=panel; g.fillRect(0,0,w,h);
+  g.strokeStyle=grid; g.lineWidth=1;
+  g.beginPath(); g.moveTo(Math.round(w/2)+.5,12); g.lineTo(Math.round(w/2)+.5,h-8); g.stroke();
+  g.font='9px "IBM Plex Mono",monospace'; g.textBaseline='middle';
+  const dashLine=(x1,y1,x2,y2)=>{g.strokeStyle=grid;g.lineWidth=1;g.setLineDash([3,3]);
+    g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.setLineDash([]);};
+  const discLine=(cx,cy,ang,R)=>{g.strokeStyle=ink;g.lineWidth=2.6;g.lineCap='round';
+    g.beginPath();g.moveTo(cx-R*Math.cos(ang),cy-R*Math.sin(ang));g.lineTo(cx+R*Math.cos(ang),cy+R*Math.sin(ang));
+    g.stroke();g.lineCap='butt';};
+  {
+    const cx=w*0.26, cy=h*0.55;
+    g.fillStyle=faint; g.textAlign='center'; g.fillText('FROM THE SIDE',cx,14);
+    dashLine(cx-34,cy,cx+42,cy);
+    const gA=-S.launch*DEG, dA=-(S.launch+S.aoa)*DEG;
+    arrowTo(g,cx,cy,cx+44*Math.cos(gA),cy+44*Math.sin(gA),acc,1.7);
+    discLine(cx,cy,dA,28);
+    g.textAlign='left'; g.fillStyle=acc; g.fillText('nose '+(S.aoa>=0?'+':'')+S.aoa.toFixed(0)+'\u00B0',6,h-9);
+    g.fillStyle=muted; g.textAlign='right'; g.fillText('launch '+S.launch+'\u00B0',w/2-8,h-9);
+  }
+  {
+    const cx=w*0.75, cy=h*0.55, b=S.bank*DEG;
+    g.fillStyle=faint; g.textAlign='center'; g.fillText('FROM BEHIND',cx,14);
+    dashLine(cx-38,cy,cx+38,cy);
+    discLine(cx,cy,b,30);
+    arrowTo(g,cx,cy,cx+40*Math.sin(b),cy-40*Math.cos(b),acc,1.7);
+    const io=(S.bank<0)===(H.io==='left')?'IO':'OO';
+    g.fillStyle=S.bank===0?muted:acc; g.textAlign='center';
+    g.fillText(S.bank===0?'flat':Math.abs(S.bank)+'\u00B0 '+io+' \u2192 curves '+(S.bank>0?'right':'left'),cx,h-9);
+  }
+}
+
+/* ---------------- coefficient charts ---------------- */
+function drawCoeffs(){
+  const R=window.__R;
+  const lo=-10, hi=45;
+  const specs=[
+    {id:'cCL',f:(a,C)=>{const w=blendW(Math.abs(a));return (1-w)*(C.CL0+C.CLa*a)+w*2*Math.sin(a)*Math.cos(a);},lab:'C_L'},
+    {id:'cCD',f:(a,C)=>{const w=blendW(Math.abs(a));return (1-w)*(C.CD0+C.CDa*(a-A0)*(a-A0))+w*(0.1+2*Math.sin(a)*Math.sin(a));},lab:'C_D'},
+    {id:'cCM',f:(a,C)=>{const aS=Math.tanh(a/(38*DEG))*(38*DEG);return C.CM0+C.CMa*aS;},lab:'C_M'}
+  ];
+  const cols={pc:css('accent'),hum:css('teal'),sc:css('ochre')};
+  const faint=css('faint'),grid=css('grid'),gs=css('grid-strong'),ink=css('ink'),panel=css('panel'),accS=css('accent-soft');
+  const liveA=R.path.filter(p=>p.live).map(p=>p.a);
+  const aLo=liveA.length?Math.min(...liveA):0, aHi=liveA.length?Math.max(...liveA):0;
+
+  specs.forEach(sp=>{
+    const {g,w,h}=setup($(sp.id),200), L=44,Rp=12,T=26,B=26, pw=w-L-Rp, ph=h-T-B;
+    let vmin=1e9,vmax=-1e9;
+    Object.keys(SETS).forEach(k=>{for(let d=lo;d<=hi;d+=1){const v=sp.f(d*DEG,SETS[k]);vmin=Math.min(vmin,v);vmax=Math.max(vmax,v);}});
+    const pad=(vmax-vmin)*0.12; vmin-=pad; vmax+=pad;
+    const X=d=>L+(d-lo)/(hi-lo)*pw, Y=v=>T+ph-(v-vmin)/(vmax-vmin)*ph;
+    g.fillStyle=panel; g.fillRect(0,0,w,h);
+    g.font='10px '+"'IBM Plex Mono',monospace"; g.textBaseline='middle';
+    const vs=step(vmax-vmin,4);
+    for(let v=Math.ceil(vmin/vs)*vs;v<=vmax;v+=vs){
+      g.strokeStyle=Math.abs(v)<1e-9?gs:grid; g.lineWidth=1;
+      g.beginPath();g.moveTo(L,Math.round(Y(v))+.5);g.lineTo(w-Rp,Math.round(Y(v))+.5);g.stroke();
+      g.fillStyle=faint;g.textAlign='right';g.fillText((Math.abs(v)<1e-9?0:v).toFixed(vs<0.05?2:vs<0.5?2:1),L-6,Y(v));
+    }
+    // operating band
+    if(aHi>aLo){g.fillStyle=accS;g.fillRect(X(Math.max(lo,aLo)),T,X(Math.min(hi,aHi))-X(Math.max(lo,aLo)),ph);}
+    // marker rules
+    [[-4,'α₀'],[8.8,'trim']].forEach(([d,lb])=>{
+      g.strokeStyle=gs;g.setLineDash([2,3]);g.lineWidth=1;
+      g.beginPath();g.moveTo(Math.round(X(d))+.5,T);g.lineTo(Math.round(X(d))+.5,T+ph);g.stroke();g.setLineDash([]);
+      g.fillStyle=faint;g.textAlign='center';g.fillText(lb,X(d),T+8);
+    });
+    Object.keys(SETS).forEach(k=>{
+      g.strokeStyle=cols[k]; g.lineWidth=k==='pc'?2:1.4; g.beginPath();
+      for(let d=lo;d<=hi;d+=0.5){const v=sp.f(d*DEG,SETS[k]); d===lo?g.moveTo(X(d),Y(v)):g.lineTo(X(d),Y(v));}
+      g.stroke();
+    });
+    g.strokeStyle=ink;g.lineWidth=1;g.beginPath();g.moveTo(L+.5,T);g.lineTo(L+.5,T+ph);g.lineTo(w-Rp,T+ph);g.stroke();
+    g.fillStyle=faint;g.textAlign='center';
+    for(let d=0;d<=hi;d+=15)g.fillText(d+'°',X(d),h-12);
+    g.fillText('−10°',X(-10)+4,h-12);
+    g.textAlign='right';g.fillText('angle of attack',w-Rp,T-12);
+  });
+}
+
+/* ---------------- precession chart ---------------- */
+function drawPrec(){
+  const cv=$('cPrec'); const {g,w,h}=setup(cv,210), L=48,Rp=16,T=26,B=28, pw=w-L-Rp, ph=h-T-B;
+  const faint=css('faint'),grid=css('grid'),ink=css('ink'),acc=css('accent'),panel=css('panel'),gs=css('grid-strong');
+  const V=14, a=5*DEG, rho=1.23;
+  const Mm=Math.abs(0.5*rho*V*V*AREA*DIA*(-0.02+0.13*a));
+  const sLo=15,sHi=130;
+  const f=s=>Mm/(IZZ*s)/DEG;
+  const yMax=f(sLo)*1.08;
+  const X=s=>L+(s-sLo)/(sHi-sLo)*pw, Y=v=>T+ph-v/yMax*ph;
+  g.fillStyle=panel;g.fillRect(0,0,w,h);
+  g.font='10px '+"'IBM Plex Mono',monospace";g.textBaseline='middle';
+  const ys=step(yMax,4);
+  for(let v=0;v<=yMax;v+=ys){
+    g.strokeStyle=grid;g.lineWidth=1;g.beginPath();g.moveTo(L,Math.round(Y(v))+.5);g.lineTo(w-Rp,Math.round(Y(v))+.5);g.stroke();
+    g.fillStyle=faint;g.textAlign='right';g.fillText(v.toFixed(ys<1?1:0),L-6,Y(v));
+  }
+  g.strokeStyle=acc;g.lineWidth=2;g.beginPath();
+  for(let s=sLo;s<=sHi;s+=1){s===sLo?g.moveTo(X(s),Y(f(s))):g.lineTo(X(s),Y(f(s)));}
+  g.stroke();
+  const cur=+$('pspin').value;
+  g.strokeStyle=gs;g.setLineDash([3,3]);g.beginPath();g.moveTo(Math.round(X(cur))+.5,T);g.lineTo(Math.round(X(cur))+.5,Y(f(cur)));g.stroke();g.setLineDash([]);
+  g.fillStyle=acc;g.beginPath();g.arc(X(cur),Y(f(cur)),4.5,0,7);g.fill();
+  g.strokeStyle=ink;g.lineWidth=1;g.beginPath();g.moveTo(L+.5,T);g.lineTo(L+.5,T+ph);g.lineTo(w-Rp,T+ph);g.stroke();
+  g.fillStyle=faint;g.textAlign='center';
+  const cutP=w-Rp-96;
+  for(let s=25;s<=125;s+=25) if(X(s)<cutP) g.fillText(s,X(s),h-13);
+  g.textAlign='right';g.fillText('spin, rad/s',w-Rp,h-13);
+  g.textAlign='left';g.fillText('roll rate, deg/s',L-38,T-11);
+  $('vPspin').textContent=cur;
+  $('vProll').textContent=f(cur).toFixed(1)+'°/s';
+  const ratio=f(50)/f(cur);
+  $('vPnote').textContent = cur===50 ? 'Reference: 50 rad/s ≈ 8 rev/s, a normal release.'
+    : (ratio>1 ? `Turns ${ratio.toFixed(2)}× faster than a normal 50 rad/s release.`
+               : `Turns ${(1/ratio).toFixed(2)}× slower than a normal 50 rad/s release.`);
+}
+
+/* ---------------- UI ---------------- */
+const RANGE=['speed','spin','aoa','launch','bank','height','wobble','trim','wind','wdir','alt','temp'];
+const KEYMAP={speed:'speed',spin:'spin',aoa:'aoa',launch:'launch',bank:'bank',height:'height',
+  wobble:'wobble',trim:'trim',wind:'wind',wdir:'wdir',alt:'alt',temp:'temp'};
+
+function buildSegs(){
+  const hs=$('handSeg'); hs.innerHTML='';
+  HANDS.forEach(hh=>{const b=document.createElement('button');b.textContent=hh.label;b.dataset.k=hh.k;
+    b.setAttribute('aria-pressed',String(S.hand===hh.k));
+    b.onclick=()=>{S.hand=hh.k;buildSegs();run();};hs.appendChild(b);});
+  const ss=$('setSeg'); ss.innerHTML='';
+  Object.keys(SETS).forEach(k=>{const b=document.createElement('button');b.textContent=SETS[k].n;
+    b.setAttribute('aria-pressed',String(S.set===k));
+    b.onclick=()=>{S.set=k;S.trim=SETS[k].trim;syncInputs();buildSegs();run();};ss.appendChild(b);});
+  const ps=$('presets'); if(!ps.children.length){
+    Object.keys(PRESETS).forEach(nm=>{const b=document.createElement('button');b.textContent=nm;
+      b.onclick=()=>{S=Object.assign({},PRESETS[nm]);syncInputs();buildSegs();run();};ps.appendChild(b);});
+  }
+}
+function syncInputs(){RANGE.forEach(k=>{$(k).value=S[KEYMAP[k]];});}
+
+function windLabel(d){
+  const names=['ahead','ahead-right','your right','behind-right','behind','behind-left','your left','ahead-left'];
+  return d+'° · '+names[Math.round(((d%360)+360)%360/45)%8];
+}
+function updateLabels(){
+  const H=HANDS.find(h=>h.k===S.hand);
+  $('vSpeed').textContent=S.speed.toFixed(1);
+  $('vSpin').textContent=S.spin;
+  $('vAoa').textContent=S.aoa.toFixed(1);
+  $('vLaunch').textContent=S.launch;
+  $('vBank').textContent=S.bank;
+  $('vHeight').textContent=S.height.toFixed(2);
+  $('vWob').textContent=S.wobble;
+  $('vTrim').textContent=S.trim.toFixed(1);
+  $('vWind').textContent=S.wind.toFixed(1);
+  $('vWdir').textContent=windLabel(S.wdir);
+  $('vAlt').textContent=S.alt;
+  $('vTemp').textContent=S.temp;
+
+  $('handHint').textContent=`Spins ${H.s===-1?'clockwise':'counter-clockwise'} from above · turns over to the ${H.turn}`;
+  $('hSpeed').textContent = S.speed<15?'short pass range':S.speed<22?'firm throw':'huck / pull speed';
+  const rev=(S.spin/(2*Math.PI)).toFixed(1);
+  $('hSpin').textContent=`${rev} rev/s · advance ratio ${(S.spin*DIA/(2*S.speed)).toFixed(2)}`;
+  $('hAoa').textContent = S.aoa<-2?'nose-down — below the zero-lift angle':S.aoa<=6?'flat to slightly open — the good band'
+    : S.aoa<=12?'getting nose-up; drag is climbing':'nose-up — this is the distance killer';
+  $('hLaunch').textContent = S.launch<=6?'flat and low':S.launch<=14?'near the max-range angle'
+    : S.launch<=24?'more hang time than range':'high and short — not how you get distance';
+  $('hBank').textContent = S.bank===0?'flat'
+    : (S.bank<0) === (H.io==='left') ? `${Math.abs(S.bank)}° inside-out (hyzer) — curves ${H.io}`
+    : `${Math.abs(S.bank)}° outside-in (anhyzer) — curves ${H.io==='left'?'right':'left'}`;
+  $('hWob').textContent = S.wobble===0?'clean, aligned release'
+    : S.wobble<40?'slight flutter off the rim':'heavy wobble — flies understable, dies upwind';
+  $('hTrim').textContent = S.trim<3.5?'fresh, very stable disc'
+    : S.trim<6.5?'broken-in Ultra-Star — the default'
+    : S.trim<9.5?'near the published wind-tunnel value (8.8°)':'beat-up, understable disc';
+  $('hSet').textContent = S.set==='pc'?'Wind-tunnel forces — the recommended set'
+    : S.set==='hum'?'Flight-fitted; much draggier, shorter flights':'Intermediate simulation set';
+  $('hWind').textContent = S.wind===0?'still air':S.wind<4?'light breeze':S.wind<8?'noticeable wind':'strong wind — everything changes';
+  const rho=airDensity(S.alt,S.temp);
+  $('hAlt').textContent=`air density ${rho.toFixed(3)} kg/m³ (${((rho/1.225-1)*100).toFixed(1)}% vs sea level ISA)`;
+  $('hTemp').textContent = S.temp<5?'cold — denser air, but grip and snap suffer':S.temp>28?'warm — thinner air, more distance, less float':'moderate';
+}
+
+function fmtLat(v){return Math.abs(v)<0.15?'0.0':Math.abs(v).toFixed(1);}
+function latUnit(v){return Math.abs(v)<0.15?'m':'m '+(v>0?'right':'left');}
+
+function render(){
+  const R=window.__R, H=HANDS.find(h=>h.k===S.hand);
+  const tiles=[
+    ['Downrange',R.down.toFixed(1),'m'],
+    ['Lateral',fmtLat(R.lat),latUnit(R.lat)],
+    ['Air time',R.time.toFixed(2),'s'],
+    ['Peak height',R.peak.toFixed(2),'m'],
+    ['Arrival speed',R.vEnd.toFixed(1),'m/s'],
+    ['Spin left',(R.spinEnd/(2*Math.PI)).toFixed(1),'rev/s'],
+    ['Advance ratio',R.advR.toFixed(2),''],
+    ['Peak AoA',R.maxA.toFixed(0),'°']
+  ];
+  $('readout').innerHTML=tiles.map(([k,v,u])=>
+    `<div class="rd"><div class="k">${k}</div><div class="v">${v}${u?' <small>'+u+'</small>':''}</div></div>`).join('');
+
+  // shape description from the heading trace
+  const right=R.hdgMax, left=-R.hdgMin;
+  let shape;
+  if(right>4 && left>4) shape=`S-curve — turns ${right.toFixed(0)}° right, then fades ${left.toFixed(0)}° left`;
+  else if(right>4) shape=`turns right throughout, ${right.toFixed(0)}° of heading change`;
+  else if(left>4) shape=`fades left throughout, ${left.toFixed(0)}° of heading change`;
+  else shape='holds a straight line';
+  const flags=[];
+  if(R.maxA>26) flags.push('running past 26° angle of attack in flight — this one stalls out');
+  if(R.advR<0.25) flags.push('advance ratio below 0.25: badly under-spun for this speed');
+  if(S.aoa>10) flags.push('nose-up release — drag penalty grows with the square of the angle');
+  if(S.wobble>50) flags.push('heavy wobble is costing distance and flying it understable');
+  if(R.peak>2.1 && R.path[R.path.length-1].z<=0.01 && R.vEnd>13) flags.push('arrives fast and flat — hard to catch');
+  $('verdict').innerHTML=`<b>Shape:</b> ${shape}. <b>Arrives</b> ${R.vEnd.toFixed(1)} m/s with ${(R.spinEnd/(2*Math.PI)).toFixed(1)} rev/s left.`
+    + (flags.length?`<br><span class="flag">▲ ${flags.join(' · ')}</span>`:'');
+  $('legRef').hidden=!REF;
+  drawTraj(); drawCoeffs(); drawAttitude();
+}
+
+let raf=null;
+function run(){
+  RANGE.forEach(k=>{S[KEYMAP[k]]=+$(k).value;});
+  updateLabels();
+  window.__R=simulate({hand:HANDS.find(h=>h.k===S.hand).s,speed:S.speed,spin:S.spin,aoa:S.aoa,
+    launch:S.launch,bank:S.bank,height:S.height,wobble:S.wobble,trim:S.trim,set:S.set,
+    wind:S.wind,wdir:S.wdir,alt:S.alt,temp:S.temp});
+  if(raf)cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(render);
+}
+
+RANGE.forEach(k=>$(k).addEventListener('input',()=>{playT=null;playing=false;run();}));
+$('pinBtn').onclick=()=>{REF=window.__R;REFS=Object.assign({},S);$('legHint').textContent='Reference pinned — now change something';render();};
+$('clearBtn').onclick=()=>{REF=null;$('legHint').textContent='Drag any slider; both views redraw live';render();};
+$('playBtn').onclick=()=>{
+  if(playing){playing=false;playT=null;$('playBtn').textContent='▶ Fly it';render();return;}
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){playT=null;return;}
+  playing=true;$('playBtn').textContent='■ Stop';
+  const T=window.__R.time, t0=performance.now();
+  (function tick(){
+    if(!playing)return;
+    playT=((performance.now()-t0)/1000)%(T+0.5);
+    if(playT>T)playT=T;
+    drawTraj();
+    requestAnimationFrame(tick);
+  })();
+};
+$('pspin').addEventListener('input',drawPrec);
+
+function redrawAll(){run();drawPrec();}
+window.addEventListener('resize',()=>{clearTimeout(window.__rz);window.__rz=setTimeout(redrawAll,140);});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+// boot: default throw, with the nose-up mistake pinned so both traces show at rest
+syncInputs(); buildSegs();
+(function boot(){
+  const b=PRESETS['Standard backhand'];
+  REF=simulate({hand:-1,speed:b.speed,spin:b.spin,aoa:14,launch:10,bank:0,height:b.height,
+    wobble:0,trim:b.trim,set:b.set,wind:0,wdir:0,alt:0,temp:20});
+  $('legHint').textContent='Reference: the same throw released 14° nose-up';
+})();
+run(); drawPrec();
+})();
+</script>
+
+</body>
+</html>
